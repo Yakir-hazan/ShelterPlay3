@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Missile Track</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c10;--s1:#0d1219;--border:rgba(255,80,80,0.15);--accent:#ff4444;--accent2:#ff8c00;--green:#00e5b0;--blue:#3a9fff;--text:#e8f0fe;--muted:#4a6a8a;--mono:'IBM Plex Mono',monospace;--sans:'Heebo',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:999;}
+header{background:var(--s1);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.logo{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.1em;}
+.logo span{color:var(--muted);font-weight:400;}
+.status-bar{display:flex;align-items:center;gap:8px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:background .3s;}
+.dot.active{background:var(--green);box-shadow:0 0 6px var(--green);}
+.dot.alert{background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pulse .8s infinite;}
+.stxt{font-family:var(--mono);font-size:10px;color:var(--muted);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.main{display:flex;flex-direction:column;gap:10px;padding:10px 12px;max-width:700px;margin:0 auto;width:100%;}
+.alert-banner{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.4);border-radius:8px;padding:10px 14px;display:none;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--accent);}
+.alert-banner.show{display:flex;}
+.aicon{animation:pulse .6s infinite;}
+.cw{position:relative;background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+canvas{display:block;width:100%;height:260px;}
+.cov{position:absolute;top:8px;right:10px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;}
+.tag{font-family:var(--mono);font-size:9px;background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--muted);letter-spacing:.05em;}
+.tag.live{color:var(--green);border-color:rgba(0,229,176,.3);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:9px 8px 7px;text-align:center;}
+.sv{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--accent2);display:block;line-height:1;margin-bottom:3px;transition:color .3s;}
+.sv.ok{color:var(--green);}.sv.warn{color:var(--accent);}
+.sl{font-size:9px;color:var(--muted);display:block;line-height:1.3;}
+.cfg{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.ctit{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.crow{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;}
+.cf{display:flex;flex-direction:column;gap:3px;flex:1;min-width:140px;}
+.cf label{font-size:10px;color:var(--muted);font-family:var(--mono);}
+.cf input{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;width:100%;transition:border-color .2s;}
+.cf input:focus{border-color:var(--accent);}
+.irow{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.irow label{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;}
+.irow input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;}
+.irow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.iv{font-family:var(--mono);font-size:11px;color:var(--accent);min-width:26px;}
+.btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn{padding:9px 14px;border-radius:7px;border:1px solid;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;background:transparent;}
+.btn:active{transform:scale(.96);}
+.bs{color:var(--green);border-color:rgba(0,229,176,.4);}
+.bs:hover{background:rgba(0,229,176,.08);}
+.bs.run{color:var(--accent);border-color:rgba(255,68,68,.4);}
+.bd{color:var(--blue);border-color:rgba(58,159,255,.3);}
+.bd:hover{background:rgba(58,159,255,.08);}
+.br{color:var(--muted);border-color:rgba(74,106,138,.3);}
+.logw{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.logh{padding:8px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.logh span{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;}
+.lc{font-family:var(--mono);font-size:10px;background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.2);border-radius:4px;padding:1px 6px;color:var(--accent);}
+.logb{max-height:120px;overflow-y:auto;padding:4px 8px;}
+.le{font-family:var(--mono);font-size:10px;color:var(--muted);padding:3px 4px;border-bottom:1px solid rgba(255,80,80,.05);display:grid;grid-template-columns:60px 70px 70px 65px auto;gap:4px;}
+.le:last-child{border-bottom:none;}
+.lt{color:var(--blue);}.lx{color:var(--text);}.ly{color:var(--accent2);}.lv{color:var(--green);}
+.lem{padding:12px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--muted);}
+.logb::-webkit-scrollbar{width:3px;}
+.logb::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--muted);font-family:var(--mono);}
+.leg{display:flex;align-items:center;gap:4px;}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ll{width:14px;height:2px;flex-shrink:0;border-radius:1px;}
+footer{text-align:center;padding:8px;font-family:var(--mono);font-size:9px;color:var(--muted);border-top:1px solid var(--border);margin-top:4px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">MISSILE<span>/</span>TRACK</div>
+  <div class="status-bar">
+    <div class="dot" id="dot"></div>
+    <span class="stxt" id="stxt">IDLE</span>
+  </div>
+</header>
+<div class="main">
+  <div class="alert-banner" id="abanner">
+    <span class="aicon">!</span>
+    <span id="amsg">מסלול פעיל</span>
+  </div>
+  <div class="cw">
+    <canvas id="traj"></canvas>
+    <div class="cov">
+      <div class="tag live">LIVE</div>
+      <div class="tag" id="ttag">T+0s</div>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="ld" style="background:#ff4444"></div>מדידות</div>
+    <div class="leg"><div class="ll" style="background:#3a9fff"></div>Kalman</div>
+    <div class="leg"><div class="ll" style="background:#00e5b0;opacity:.7"></div>חיזוי</div>
+    <div class="leg"><div class="ld" style="background:#ffc142"></div>פגיעה</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="sv" id="ss">--</span><span class="sl">מהירות m/s</span></div>
+    <div class="stat"><span class="sv" id="sa">--</span><span class="sl">זווית deg</span></div>
+    <div class="stat"><span class="sv" id="si">--</span><span class="sl">פגיעה m</span></div>
+    <div class="stat"><span class="sv" id="sc">0</span><span class="sl">נקודות</span></div>
+  </div>
+  <div class="cfg">
+    <div class="ctit">// הגדרות API</div>
+    <div class="crow">
+      <div class="cf" style="flex:2"><label>API Endpoint URL</label><input type="text" id="aurl" value="https://your-api.example.com/track/latest"></div>
+      <div class="cf" style="flex:1"><label>API Key</label><input type="text" id="akey" placeholder="Bearer token..."></div>
+    </div>
+    <div class="irow">
+      <label>Polling כל:</label>
+      <input type="range" id="iv" min="1" max="10" step="1" value="2">
+      <span class="iv" id="ivv">2s</span>
+    </div>
+    <div class="btns">
+      <button class="btn bs" id="bstart" onclick="toggleTracking()">▶ התחל מעקב</button>
+      <button class="btn bd" onclick="startDemo()">◈ הדגמה</button>
+      <button class="btn br" onclick="resetAll()">↺ איפוס</button>
+    </div>
+  </div>
+  <div class="logw">
+    <div class="logh"><span>// יומן התראות</span><span class="lc" id="lcount">0</span></div>
+    <div class="logb" id="logb"><div class="lem">ממתין להתראות...</div></div>
+  </div>
+</div>
+<footer>MISSILE TRACK v1.0 · Kalman Filter · Real-Time Ballistic Estimator</footer>
+<script>
+const G=9.81;
+let meas=[],kstates=[],kf=null,ptimer=null,dtimer=null,running=false,demoT=0,startT=null;
+
+class KF{
+  constructor(){this.x=[[0],[0],[0],[0]];this.P=[[500,0,0,0],[0,500,0,0],[0,0,500,0],[0,0,0,500]];}
+  mm(A,B){const r=A.length,c=B[0].length,k=B.length;return Array.from({length:r},(_,i)=>Array.from({length:c},(_,j)=>{let s=0;for(let l=0;l<k;l++)s+=A[i][l]*B[l][j];return s;}));}
+  ma(A,B){return A.map((r,i)=>r.map((v,j)=>v+B[i][j]));}
+  ms(A,B){return A.map((r,i)=>r.map((v,j)=>v-B[i][j]));}
+  mt(A){return A[0].map((_,j)=>A.map(r=>r[j]));}
+  inv2(M){const d=M[0][0]*M[1][1]-M[0][1]*M[1][0];return[[M[1][1]/d,-M[0][1]/d],[-M[1][0]/d,M[0][0]/d]];}
+  predict(dt){
+    const F=[[1,0,dt,0],[0,1,0,dt],[0,0,1,0],[0,0,0,1]];
+    const Bu=[[0],[-0.5*G*dt*dt],[0],[-G*dt]];
+    const Q=[[dt**4/4,0,dt**3/2,0],[0,dt**4/4,0,dt**3/2],[dt**3/2,0,dt**2,0],[0,dt**3/2,0,dt**2]].map(r=>r.map(v=>v*.3));
+    this.x=this.ma(this.mm(F,this.x),Bu);this.P=this.ma(this.mm(this.mm(F,this.P),this.mt(F)),Q);
+  }
+  update(zx,zy){
+    const H=[[1,0,0,0],[0,1,0,0]],R=[[2,0],[0,2]];
+    const S=this.ma(this.mm(this.mm(H,this.P),this.mt(H)),R);
+    const K=this.mm(this.mm(this.P,this.mt(H)),this.inv2(S));
+    const z=[[zx],[zy]];
+    this.x=this.ma(this.x,this.mm(K,this.ms(z,this.mm(H,this.x))));
+    const I=[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]];
+    this.P=this.mm(this.ms(I,this.mm(K,H)),this.P);
+  }
+  get(){return{x:this.x[0][0],y:this.x[1][0],vx:this.x[2][0],vy:this.x[3][0]};}
+}
+
+function predB(st){
+  const xs=[st.x],ys=[st.y];let x=st.x,y=st.y,vx=st.vx,vy=st.vy,imp=null;
+  for(let i=0;i<4000;i++){
+    x+=vx*.05;y+=vy*.05-0.5*G*.0025;vy-=G*.05;xs.push(x);ys.push(y);
+    if(y<=0&&xs.length>3){const yp=ys[ys.length-2],xp=xs[xs.length-2],f=yp/(yp-y);imp={x:xp+f*(x-xp),y:0};xs.push(imp.x);ys.push(0);break;}
+  }
+  return{xs,ys,imp};
+}
+
+function rebuild(){
+  kf=new KF();kstates=[];
+  if(meas.length<2)return;
+  const m1=meas[0],m2=meas[1],dt=Math.max(m2.t-m1.t,.01);
+  kf.x=[[m2.x],[m2.y],[(m2.x-m1.x)/dt],[(m2.y-m1.y)/dt]];
+  kstates.push(kf.get());
+  for(let i=2;i<meas.length;i++){const p=meas[i-1],c=meas[i];kf.predict(Math.max(c.t-p.t,.01));kf.update(c.x,c.y);kstates.push(kf.get());}
+}
+
+function ingest(x,y,t){
+  if(meas.length&&meas[meas.length-1].t===t)return;
+  meas.push({x,y,t});rebuild();draw();upStats();logEntry(x,y,t);
+  if(meas.length>=2)showAlert();
+}
+
+function parseResp(d){
+  if(Array.isArray(d))d=d[d.length-1];
+  if(d.x!==undefined&&d.y!==undefined)return{x:+d.x,y:+d.y,t:+(d.timestamp??d.t??d.time??(Date.now()/1000))};
+  if(d.lat!==undefined)return{x:+d.lon*111000,y:+(d.alt??d.altitude??0),t:+(d.time??d.timestamp??(Date.now()/1000))};
+  if(d.position){const p=d.position;return{x:+p[0],y:+p[1],t:+(d.t??d.time??(Date.now()/1000))};}
+  return null;
+}
+
+async function poll(){
+  const url=document.getElementById('aurl').value.trim();
+  const key=document.getElementById('akey').value.trim();
+  if(!url||url.includes('example.com'))return;
+  try{
+    const h={'Content-Type':'application/json'};
+    if(key)h['Authorization']=key.startsWith('Bearer')?key:'Bearer '+key;
+    const res=await fetch(url,{headers:h,cache:'no-store'});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    const pt=parseResp(data);if(!pt)return;
+    ingest(pt.x,pt.y,pt.t);setSt('active','LIVE');
+  }catch(e){setSt('idle','ERR: '+e.message.slice(0,18));}
+}
+
+function toggleTracking(){
+  if(running){stopT();return;}
+  running=true;startT=Date.now();
+  const iv=+document.getElementById('iv').value*1000;
+  poll();ptimer=setInterval(poll,iv);
+  const b=document.getElementById('bstart');b.textContent='■ עצור מעקב';b.classList.add('run');
+  setSt('active','POLLING');tick();
+}
+
+function stopT(){
+  running=false;clearInterval(ptimer);ptimer=null;
+  const b=document.getElementById('bstart');b.textContent='▶ התחל מעקב';b.classList.remove('run');
+  setSt('idle','STOPPED');
+}
+
+function startDemo(){
+  resetAll();running=true;startT=Date.now();demoT=0;
+  setSt('alert','DEMO');
+  const b=document.getElementById('bstart');b.textContent='■ עצור';b.classList.add('run');
+  tick();
+  const v0=85,a=48*Math.PI/180,vx0=v0*Math.cos(a),vy0=v0*Math.sin(a);
+  dtimer=setInterval(()=>{
+    demoT+=1;
+    const xt=vx0*demoT,yt=vy0*demoT-0.5*G*demoT*demoT;
+    if(yt<-5){clearInterval(dtimer);stopT();setSt('idle','IMPACT');return;}
+    ingest(xt+(Math.random()-.5)*4,Math.max(0,yt+(Math.random()-.5)*4),demoT);
+  },900);
+}
+
+function resetAll(){
+  stopT();clearInterval(dtimer);dtimer=null;
+  meas=[];kstates=[];kf=null;demoT=0;
+  ['ss','sa','si'].forEach(id=>document.getElementById(id).textContent='--');
+  document.getElementById('sc').textContent='0';
+  document.getElementById('lcount').textContent='0';
+  document.getElementById('logb').innerHTML='<div class="lem">ממתין להתראות...</div>';
+  document.getElementById('abanner').classList.remove('show');
+  document.getElementById('ttag').textContent='T+0s';
+  draw();
+}
+
+function tick(){
+  if(!running||!startT)return;
+  document.getElementById('ttag').textContent='T+'+Math.round((Date.now()-startT)/1000)+'s';
+  setTimeout(tick,1000);
+}
+
+function setSt(type,txt){
+  const d=document.getElementById('dot');
+  d.className='dot'+(type==='active'?' active':type==='alert'?' alert':'');
+  document.getElementById('stxt').textContent=txt;
+}
+
+function getP(){if(!kstates.length)return null;return predB(kstates[kstates.length-1]);}
+
+function showAlert(){
+  document.getElementById('abanner').classList.add('show');
+  const p=getP();
+  if(p&&p.imp)document.getElementById('amsg').textContent='מסלול פעיל — פגיעה חזויה ב-'+Math.round(p.imp.x)+'m';
+  setSt('alert','TRACKING');
+}
+
+function upStats(){
+  document.getElementById('sc').textContent=meas.length;
+  if(!kstates.length)return;
+  const st=kstates[kstates.length-1];
+  const sp=Math.sqrt(st.vx**2+st.vy**2);
+  const ang=Math.atan2(st.vy,st.vx)*180/Math.PI;
+  const sv=document.getElementById('ss');sv.textContent=sp.toFixed(0);sv.className='sv'+(sp>400?' warn':' ok');
+  document.getElementById('sa').textContent=ang.toFixed(1);
+  const p=getP(),si=document.getElementById('si');
+  if(p&&p.imp){si.textContent=Math.round(p.imp.x)+'m';si.className='sv warn';document.getElementById('amsg').textContent='מסלול פעיל — פגיעה חזויה ב-'+Math.round(p.imp.x)+'m';}
+  else{si.textContent='--';si.className='sv';}
+}
+
+function logEntry(x,y,t){
+  const b=document.getElementById('logb');
+  const e=b.querySelector('.lem');if(e)e.remove();
+  const sp=kstates.length?Math.sqrt(kstates[kstates.length-1].vx**2+kstates[kstates.length-1].vy**2):0;
+  const d=document.createElement('div');d.className='le';
+  d.innerHTML='<span class="lt">T+'+t.toFixed(1)+'s</span><span class="lx">x='+Math.round(x)+'m</span><span class="ly">y='+Math.round(y)+'m</span><span class="lv">'+sp.toFixed(0)+'m/s</span><span>#'+meas.length+'</span>';
+  b.prepend(d);
+  document.getElementById('lcount').textContent=meas.length;
+}
+
+const cv=document.getElementById('traj'),ctx=cv.getContext('2d');
+
+function draw(){
+  const dpr=window.devicePixelRatio||1,W=cv.offsetWidth,H=260;
+  cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+  ctx.fillStyle='#0d1219';ctx.fillRect(0,0,W,H);
+  if(!meas.length){
+    ctx.fillStyle='#1a3a5a';ctx.font='11px IBM Plex Mono,monospace';ctx.textAlign='center';
+    ctx.fillText('AWAITING TELEMETRY...',W/2,H/2-6);
+    ctx.fillStyle='#0f2a3a';ctx.font='9px IBM Plex Mono,monospace';ctx.fillText('ממתין לנתוני מסלול',W/2,H/2+10);return;
+  }
+  const P={l:44,r:14,t:14,b:28};
+  const ax=[...meas.map(m=>m.x)],ay=[...meas.map(m=>m.y),0];
+  let pr=null;
+  if(kstates.length){pr=predB(kstates[kstates.length-1]);ax.push(...pr.xs);ay.push(...pr.ys);}
+  const xn=Math.min(...ax)-20,xx=Math.max(...ax)+40,yn=Math.min(-10,...ay),yx=Math.max(...ay)*1.18+10;
+  const C=(x,y)=>({cx:P.l+(x-xn)/(xx-xn)*(W-P.l-P.r),cy:H-P.b-(y-yn)/(yx-yn)*(H-P.t-P.b)});
+  ctx.strokeStyle='rgba(255,80,80,.06)';ctx.lineWidth=.5;
+  for(let i=0;i<=4;i++){
+    const yv=yn+(yx-yn)*i/4,{cy}=C(xn,yv);
+    ctx.beginPath();ctx.moveTo(P.l,cy);ctx.lineTo(W-P.r,cy);ctx.stroke();
+    ctx.fillStyle='#1f3a5a';ctx.font='9px IBM Plex Mono,monospace';ctx.textAlign='right';ctx.fillText(Math.round(yv),P.l-4,cy+3);
+    const xv=xn+(xx-xn)*i/4,{cx}=C(xv,0);
+    ctx.beginPath();ctx.moveTo(cx,P.t);ctx.lineTo(cx,H-P.b);ctx.stroke();
+    ctx.textAlign='center';ctx.fillText(Math.round(xv),cx,H-P.b+11);
+  }
+  const g=C(xn,0);
+  ctx.fillStyle='rgba(255,68,68,.04)';ctx.fillRect(P.l,g.cy,W-P.l-P.r,H-P.b-g.cy);
+  ctx.strokeStyle='rgba(255,68,68,.25)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(P.l,g.cy);ctx.lineTo(W-P.r,g.cy);ctx.stroke();ctx.setLineDash([]);
+  if(pr&&pr.xs.length>1){
+    ctx.strokeStyle='rgba(0,229,176,.45)';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+    ctx.beginPath();pr.xs.forEach((x,i)=>{const{cx,cy}=C(x,pr.ys[i]);i?ctx.lineTo(cx,cy):ctx.moveTo(cx,cy);});
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  if(kstates.length>1){
+    ctx.strokeStyle='rgba(58,159,255,.8)';ctx.lineWidth=2;
+    ctx.beginPath();kstates.forEach((s,i)=>{const{cx,cy}=C(s.x,s.y);i?ctx.lineTo(cx,cy):ctx.moveTo(cx,cy);});ctx.stroke();
+  }
+  meas.forEach((m,i)=>{
+    const{cx,cy}=C(m.x,m.y),last=i===meas.length-1;
+    ctx.beginPath();ctx.arc(cx,cy,last?5:3.5,0,Math.PI*2);
+    ctx.fillStyle=last?'#ff6655':'#cc3333';ctx.fill();
+    if(last){ctx.strokeStyle='rgba(255,120,100,.4)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,9,0,Math.PI*2);ctx.stroke();}
+  });
+  if(pr&&pr.imp){
+    const{cx,cy}=C(pr.imp.x,pr.imp.y),s=8;
+    ctx.beginPath();ctx.moveTo(cx,cy-s);ctx.lineTo(cx+s,cy+s);ctx.lineTo(cx-s,cy+s);ctx.closePath();
+    ctx.fillStyle='#ffc142';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle='#ffc142';ctx.font='bold 9px monospace';ctx.textAlign='left';ctx.fillText(Math.round(pr.imp.x)+'m',cx+8,cy+3);
+  }
+}
+
+document.getElementById('iv').addEventListener('input',e=>{
+  document.getElementById('ivv').textContent=e.target.value+'s';
+  if(running){clearInterval(ptimer);ptimer=setInterval(poll,+e.target.value*1000);}
+});
+window.addEventListener('resize',draw);
+draw();
+</script>
+</body>
+</html>
