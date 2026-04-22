@@ -2,1266 +2,533 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>דילמות 🤝</title>
-<meta name="description" content="משחק דילמות לשיחות עמוקות עם הילדים">
-<meta name="theme-color" content="#08080F">
-
-<!-- PWA --> 
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="דילמות">
-<link rel="apple-touch-startup-image" href="/icons/apple-touch-icon.png">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בדיקת קול עברי</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#08080F; --s1:#0F0F1A; --s2:#141422; --s3:#1A1A2C;
-  --border:rgba(255,255,255,0.07); --b2:rgba(255,255,255,0.13); --b3:rgba(255,255,255,0.22);
-  --gold:#D4A843; --gold2:#E8C06A; --gold-bg:rgba(212,168,67,0.10); --gold-br:rgba(212,168,67,0.22);
-  --teal:#2AB5A8; --teal-bg:rgba(42,181,168,0.08); --teal-br:rgba(42,181,168,0.22);
-  --violet:#9B87F5; --coral:#E8685A; --green:#34D399;
-  --text:rgba(255,255,255,0.90); --text2:rgba(255,255,255,0.55); --text3:rgba(255,255,255,0.28);
-  --font:'Heebo',-apple-system,sans-serif; --r:18px; --r2:24px;
-  --sat:env(safe-area-inset-top,0px); --sar:env(safe-area-inset-right,0px);
-  --sab:env(safe-area-inset-bottom,0px); --sal:env(safe-area-inset-left,0px);
+  --bg: #08080F;
+  --s1: #0F0F1A;
+  --s2: #141422;
+  --border: rgba(255,255,255,0.07);
+  --b2: rgba(255,255,255,0.13);
+  --gold: #D4A843;
+  --gold-bg: rgba(212,168,67,0.10);
+  --gold-br: rgba(212,168,67,0.22);
+  --teal: #2AB5A8;
+  --teal-bg: rgba(42,181,168,0.08);
+  --teal-br: rgba(42,181,168,0.22);
+  --coral: #E8685A;
+  --green: #34D399;
+  --text: rgba(255,255,255,0.90);
+  --text2: rgba(255,255,255,0.55);
+  --text3: rgba(255,255,255,0.28);
+  --font: 'Heebo', sans-serif;
 }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%;-webkit-text-size-adjust:100%;touch-action:manipulation}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;padding-top:var(--sat);padding-bottom:var(--sab)}
-button{font-family:var(--font);cursor:pointer;border:none;background:none}
-input{font-family:var(--font);outline:none}
-a{color:inherit;text-decoration:none}
-
-/* COMPANION */
-#companion-wrap{position:fixed;bottom:0;left:0;right:0;display:flex;flex-direction:column;align-items:flex-start;padding:0 20px calc(12px + var(--sab));z-index:300;pointer-events:none;transform:translateY(120%);transition:transform 0.45s cubic-bezier(0.34,1.4,0.64,1)}
-#companion-wrap.visible{transform:translateY(0);pointer-events:all}
-.companion-row{display:flex;align-items:flex-end;gap:10px;width:100%}
-.companion-bubble{background:var(--s2);border:1px solid var(--b2);border-radius:20px 20px 20px 4px;padding:14px 16px;font-size:14px;line-height:1.55;color:var(--text);max-width:calc(100% - 90px);position:relative;box-shadow:0 8px 32px rgba(0,0,0,0.4);flex:1}
-.companion-bubble-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.companion-action-btn{background:var(--gold-bg);border:1px solid var(--gold-br);color:var(--gold);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;transition:background 0.15s}
-.companion-action-btn:active{transform:scale(0.95)}
-.companion-char{width:70px;height:85px;flex-shrink:0;position:relative}
-.companion-char svg{width:100%;height:100%;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4))}
-.companion-mute{position:absolute;top:-36px;right:0;background:var(--s2);border:1px solid var(--border);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;pointer-events:all;opacity:0.6;transition:opacity 0.2s}
-.companion-mute:hover{opacity:1}
-
-@keyframes companionBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.03)}}
-@keyframes companionBounce{0%,100%{transform:translateY(0)}25%{transform:translateY(-10px)}75%{transform:translateY(-5px)}}
-@keyframes companionWiggle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
-@keyframes companionExcited{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-14px) scale(1.05)}60%{transform:translateY(-7px) scale(1.02)}}
-@keyframes eyeBlink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
-.companion-body{transform-origin:bottom center}
-.companion-body.breathe{animation:companionBreathe 3s ease-in-out infinite}
-.companion-body.bounce{animation:companionBounce 0.6s ease-in-out}
-.companion-body.wiggle{animation:companionWiggle 0.5s ease-in-out}
-.companion-body.excited{animation:companionExcited 0.7s ease-in-out}
-.companion-eye{animation:eyeBlink 4s ease-in-out infinite;transform-origin:center}
-
-/* SETTINGS */
-#settings-modal{z-index:400}
-.settings-section{margin-bottom:24px}
-.settings-section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
-.voice-row{display:flex;align-items:center;gap:12px;background:var(--s2);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer;transition:border-color 0.15s,background 0.15s}
-.voice-row.selected{border-color:var(--gold);background:var(--gold-bg)}
-.voice-row-info{flex:1;min-width:0}
-.voice-row-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.voice-row.selected .voice-row-name{color:var(--gold)}
-.voice-row-lang{font-size:11px;color:var(--text3);margin-top:2px}
-.voice-test-btn{width:34px;height:34px;flex-shrink:0;background:var(--s3);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:background 0.15s,transform 0.1s}
-.voice-test-btn:active{transform:scale(0.9)}
-.voice-test-btn.playing{background:var(--gold-bg);border-color:var(--gold-br)}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
-.settings-row:last-child{border-bottom:none}
-.settings-row-label{font-size:14px;font-weight:600}
-.settings-row-sub{font-size:12px;color:var(--text3);margin-top:2px}
-.toggle{width:46px;height:26px;position:relative;cursor:pointer}
-.toggle input{opacity:0;width:0;height:0;position:absolute}
-.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:999px;transition:background 0.2s}
-.toggle input:checked+.toggle-track{background:var(--gold)}
-.toggle-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none}
-.toggle input:checked~.toggle-thumb{transform:translateX(20px)}
-.companion-pick-label{font-size:12px;font-weight:700;letter-spacing:0.05em;color:var(--text3);text-transform:uppercase;margin-bottom:10px;display:block}
-.companion-pick-row{display:flex;gap:12px;margin-bottom:20px}
-.companion-pick-opt{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;background:var(--s2);border:2px solid var(--border);border-radius:16px;cursor:pointer;transition:border-color 0.15s,background 0.15s}
-.companion-pick-opt.selected{border-color:var(--gold);background:var(--gold-bg)}
-.companion-pick-opt svg{width:52px;height:62px}
-.companion-pick-name{font-size:12px;font-weight:700;color:var(--text2)}
-.companion-pick-opt.selected .companion-pick-name{color:var(--gold)}
-
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");background-size:200px;pointer-events:none;z-index:0}
-
-#app{position:relative;min-height:100dvh;display:flex;flex-direction:column;z-index:1}
-
-.screen{display:none;flex-direction:column;min-height:100dvh;padding:0 0 calc(16px + var(--sab));animation:screenIn 0.28s cubic-bezier(0.4,0,0.2,1) both}
-.screen.active{display:flex}
-@keyframes screenIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-.header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;min-height:60px}
-.header-logo{font-size:22px;font-weight:900;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px}
-.header-logo span{color:var(--gold)}
-.header-btn{width:36px;height:36px;background:var(--s2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);transition:background 0.15s,color 0.15s}
-.header-btn:hover{background:var(--s3);color:var(--text)}
-
-.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.06em}
-.badge-gold{background:var(--gold-bg);border:1px solid var(--gold-br);color:var(--gold)}
-.badge-teal{background:var(--teal-bg);border:1px solid var(--teal-br);color:var(--teal)}
-
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:16px;padding:14px 24px;font-size:15px;font-weight:700;transition:transform 0.13s,box-shadow 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent}
-.btn:active{transform:scale(0.96)}
-.btn-gold{background:var(--gold);color:#000;box-shadow:0 4px 20px rgba(212,168,67,0.2)}
-.btn-gold:hover{box-shadow:0 6px 28px rgba(212,168,67,0.35)}
-.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--b2)}
-.btn-outline:hover{border-color:var(--b3);color:var(--text)}
-.btn-ghost{background:transparent;color:var(--text2)}
-.btn-ghost:hover{color:var(--text)}
-.btn-full{width:100%}
-.btn-lg{padding:16px 28px;font-size:16px;border-radius:18px}
-.btn-sm{padding:8px 16px;font-size:13px;border-radius:12px}
-
-.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:20px}
-.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
-.progress-bar{height:3px;background:var(--border);border-radius:999px;overflow:hidden}
-.progress-fill{height:100%;background:var(--gold);border-radius:999px;transition:width 0.4s cubic-bezier(0.4,0,0.2,1)}
-
-/* ONBOARDING */
-#screen-onboarding{align-items:center;justify-content:center;padding:40px 24px;text-align:center}
-.onboarding-emoji{font-size:64px;margin-bottom:20px;animation:bounce 1s ease-in-out 3}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-.onboarding-title{font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px}
-.onboarding-title em{color:var(--gold);font-style:normal}
-.onboarding-subtitle{font-size:15px;color:var(--text2);line-height:1.65;max-width:340px;margin-bottom:32px}
-.onboarding-form{width:100%;max-width:360px}
-.field-label{font-size:12px;font-weight:700;letter-spacing:0.05em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;display:block;text-align:right}
-.field-input{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);padding:14px 16px;font-size:16px;color:var(--text);margin-bottom:20px;transition:border-color 0.15s;text-align:right}
-.field-input:focus{border-color:var(--gold)}
-.field-input::placeholder{color:var(--text3)}
-
-.role-pick-row{display:flex;gap:10px;margin-bottom:16px}
-.role-pick-opt{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;background:var(--s2);border:2px solid var(--border);border-radius:18px;cursor:pointer;transition:border-color 0.18s,background 0.18s,transform 0.13s}
-.role-pick-opt:active{transform:scale(0.96)}
-.role-pick-opt.selected{border-color:var(--gold);background:var(--gold-bg)}
-.role-pick-icon{font-size:30px;line-height:1}
-.role-pick-label{font-size:13px;font-weight:700;color:var(--text2)}
-.role-pick-opt.selected .role-pick-label{color:var(--gold)}
-
-.other-role-panel{display:none;background:var(--s2);border:1px solid var(--gold-br);border-radius:16px;padding:14px;margin-bottom:16px;animation:fadeScale 0.25s cubic-bezier(0.34,1.4,0.64,1)}
-.other-role-panel.visible{display:block}
-.other-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.other-role-chip{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--s3);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);transition:border-color 0.15s,background 0.15s,color 0.15s}
-.other-role-chip.selected{border-color:var(--gold);background:var(--gold-bg);color:var(--gold)}
-.other-role-chip-icon{font-size:18px}
-
-.gender-pick-row{display:flex;gap:12px;margin-bottom:20px}
-.gender-pick-opt{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 10px;background:var(--s2);border:2px solid var(--border);border-radius:18px;cursor:pointer;transition:border-color 0.18s,background 0.18s,transform 0.13s}
-.gender-pick-opt:active{transform:scale(0.96)}
-.gender-pick-opt.selected{border-color:var(--gold);background:var(--gold-bg)}
-.gender-pick-icon{font-size:32px;line-height:1}
-.gender-pick-label{font-size:13px;font-weight:700;color:var(--text2)}
-.gender-pick-opt.selected .gender-pick-label{color:var(--gold)}
-
-/* HOME */
-#screen-home{padding:0 0 calc(80px + var(--sab))}
-.home-content{padding:0 20px;flex:1}
-.home-greeting{padding:20px 20px 0;margin-bottom:24px}
-.home-greeting-sub{font-size:13px;color:var(--text2);margin-bottom:4px}
-.home-greeting-name{font-size:26px;font-weight:900;letter-spacing:-0.8px}
-.home-greeting-name em{color:var(--gold);font-style:normal}
-.kids-section{margin-bottom:28px}
-.section-heading{font-size:12px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px}
-.kids-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.kids-scroll::-webkit-scrollbar{display:none}
-.kid-chip{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 16px;min-width:76px;background:var(--s1);border:2px solid var(--border);border-radius:16px;cursor:pointer;transition:border-color 0.15s,background 0.15s;flex-shrink:0}
-.kid-chip.selected{border-color:var(--gold);background:var(--gold-bg)}
-.kid-chip-emoji{font-size:24px}
-.kid-chip-name{font-size:12px;font-weight:600;color:var(--text2)}
-.kid-chip.selected .kid-chip-name{color:var(--gold)}
-.kid-add-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px 16px;min-width:76px;min-height:76px;background:var(--s2);border:2px dashed var(--border);border-radius:16px;cursor:pointer;color:var(--text3);font-size:22px;flex-shrink:0;transition:border-color 0.15s,color 0.15s}
-.kid-add-chip:hover{border-color:var(--b2);color:var(--text2)}
-.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cat-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:18px 16px;cursor:pointer;transition:border-color 0.15s,transform 0.15s,background 0.15s;display:flex;flex-direction:column;gap:10px;-webkit-tap-highlight-color:transparent}
-.cat-card:hover{border-color:var(--b2);transform:scale(1.01)}
-.cat-card:active{transform:scale(0.97)}
-.cat-icon{font-size:28px}
-.cat-name{font-size:14px;font-weight:700}
-.cat-count{font-size:11px;color:var(--text3)}
-.streak-bar{margin-bottom:24px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:16px;display:flex;align-items:center;gap:14px}
-.streak-flame{font-size:28px}
-.streak-info{flex:1}
-.streak-num{font-size:20px;font-weight:900;color:var(--gold)}
-.streak-lbl{font-size:12px;color:var(--text2)}
-
-.bottom-nav{position:fixed;bottom:0;right:0;left:0;background:rgba(8,8,15,0.92);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:8px 16px calc(8px + var(--sab));z-index:50}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;border-radius:12px;cursor:pointer;color:var(--text3);transition:color 0.15s;font-size:11px;font-weight:600}
-.nav-item.active{color:var(--gold)}
-.nav-item-icon{font-size:20px}
-
-#screen-game{overflow:hidden}
-.game-header{padding:16px 20px 0;display:flex;flex-direction:column;gap:12px}
-.game-meta{display:flex;align-items:center;justify-content:space-between}
-.game-progress-text{font-size:12px;font-weight:600;color:var(--text2)}
-
-.dilemma-wrapper{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  padding:16px 20px;
-  padding-bottom:calc(16px + var(--sab));
-  overflow-y:auto;
-  gap:12px;
-}
-body.companion-visible .dilemma-wrapper{
-  padding-bottom:calc(180px + var(--sab));
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
 }
 
-.dilemma-card-wrap{
-  background:var(--s1);
-  border:1px solid var(--b2);
-  border-radius:28px;
-  padding:22px 20px 18px;
-  position:relative;
-  overflow:hidden;
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 200px;
+  pointer-events: none;
+  z-index: 0;
 }
-.dilemma-card-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--teal));opacity:0.6}
-.dilemma-question{font-size:17px;font-weight:700;line-height:1.6;color:var(--text)}
-.phase-label{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;margin-bottom:14px}
-.phase-parent{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-br)}
-.phase-child{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-br)}
-.choices-list{display:flex;flex-direction:column;gap:10px}
-.choice-btn{display:flex;align-items:center;gap:12px;background:var(--s2);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 16px;text-align:right;width:100%;font-size:14px;color:var(--text2);font-weight:500;transition:border-color 0.15s,background 0.15s,transform 0.13s,color 0.15s;line-height:1.45}
-.choice-btn:active{transform:scale(0.97)}
-.choice-btn.selected{border-color:var(--gold);background:var(--gold-bg);color:var(--text)}
-.choice-btn-dot{width:18px;height:18px;flex-shrink:0;border-radius:50%;background:var(--border);border:2px solid var(--b2);transition:background 0.15s,border-color 0.15s}
-.choice-btn.selected .choice-btn-dot{background:var(--gold);border-color:var(--gold)}
 
-#screen-reveal{padding:20px 20px 0;align-items:stretch}
-.reveal-header{text-align:center;margin-bottom:24px}
-.reveal-title{font-size:26px;font-weight:900;letter-spacing:-0.5px;margin-bottom:8px}
-.reveal-subtitle{font-size:14px;color:var(--text2)}
-.reveal-cards{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
-.reveal-person-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:18px}
-.reveal-person-label{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.reveal-person-answer{font-size:14px;font-weight:600;color:var(--text);line-height:1.45}
-.reveal-result{text-align:center;padding:20px;background:var(--s2);border-radius:var(--r2);margin-bottom:20px}
-.reveal-result-icon{font-size:40px;margin-bottom:8px}
-.reveal-result-text{font-size:18px;font-weight:800}
-.reveal-result-sub{font-size:13px;color:var(--text2);margin-top:4px}
-.stats-bar{margin-bottom:20px}
-.stats-bar-label{font-size:11px;color:var(--text3);margin-bottom:8px;display:flex;justify-content:space-between}
-.stats-choice-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.stats-choice-name{font-size:12px;color:var(--text2);flex:1;line-height:1.35}
-.stats-bar-fill{height:8px;border-radius:4px;background:var(--border);overflow:hidden;width:120px;flex-shrink:0}
-.stats-bar-inner{height:100%;border-radius:4px;background:var(--gold);transition:width 0.8s cubic-bezier(0.4,0,0.2,1);width:0}
-.stats-pct{font-size:11px;font-weight:700;color:var(--gold);width:32px;text-align:left}
-.talk-question{background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:18px;margin-bottom:16px}
-.talk-label{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
-.talk-text{font-size:14px;color:var(--text2);line-height:1.65}
+.card {
+  position: relative;
+  z-index: 1;
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: 28px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 440px;
+  animation: fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
 
-#screen-summary{padding:20px;overflow-y:auto}
-.summary-hero{text-align:center;padding:24px 0}
-.summary-big-num{font-size:72px;font-weight:900;letter-spacing:-4px;line-height:1;color:var(--gold)}
-.summary-out-of{font-size:20px;color:var(--text2)}
-.summary-title{font-size:22px;font-weight:800;margin-top:8px}
-.summary-subtitle{font-size:14px;color:var(--text2);margin-top:4px}
-.summary-breakdown{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.summary-item{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px;font-size:13px}
-.summary-item-icon{font-size:20px}
-.summary-item-text{flex:1;color:var(--text2)}
-.summary-item-result{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px}
-.result-agree{background:rgba(52,211,153,0.12);color:var(--green)}
-.result-disagree{background:rgba(232,104,90,0.12);color:var(--coral)}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-#screen-history{padding:0 20px;overflow-y:auto}
-.history-list{display:flex;flex-direction:column;gap:10px;padding:16px 0}
-.history-item{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:16px;display:flex;align-items:center;gap:14px}
-.history-score-circle{width:48px;height:48px;border-radius:50%;background:var(--gold-bg);border:2px solid var(--gold-br);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--gold);flex-shrink:0}
-.history-info{flex:1}
-.history-kid{font-size:14px;font-weight:700}
-.history-meta{font-size:12px;color:var(--text3);margin-top:2px}
-.empty-state{text-align:center;padding:60px 20px;color:var(--text3)}
-.empty-state-icon{font-size:48px;margin-bottom:12px}
-.empty-state-title{font-size:17px;font-weight:700;color:var(--text2);margin-bottom:6px}
-.empty-state-desc{font-size:13px}
+.title {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.title em { color: var(--gold); font-style: normal; }
 
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;align-items:flex-end;justify-content:center;padding-bottom:var(--sab)}
-.modal-overlay.open{display:flex;animation:fadeIn 0.2s ease}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--s1);border:1px solid var(--b2);border-radius:28px 28px 0 0;padding:24px 20px;width:100%;max-width:480px;animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1)}
-@keyframes slideUp{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
-.modal-title{font-size:18px;font-weight:800;margin-bottom:20px}
-.emoji-picker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-.emoji-opt{width:44px;height:44px;border-radius:12px;background:var(--s2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:border-color 0.15s,background 0.15s}
-.emoji-opt.selected{border-color:var(--gold);background:var(--gold-bg)}
-.age-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.age-btn{width:40px;height:40px;border-radius:50%;background:var(--s2);border:1px solid var(--b2);font-size:20px;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:background 0.15s}
-.age-btn:hover{background:var(--s3);color:var(--text)}
-.age-display{flex:1;text-align:center;font-size:24px;font-weight:900;color:var(--gold)}
-.age-lbl{font-size:11px;color:var(--text3)}
+.subtitle {
+  font-size: 13px;
+  color: var(--text3);
+  margin-bottom: 28px;
+}
 
-.toast{position:fixed;bottom:calc(90px + var(--sab));right:50%;transform:translateX(50%) translateY(20px);background:var(--s3);border:1px solid var(--b2);border-radius:12px;padding:10px 18px;font-size:14px;font-weight:600;color:var(--text);opacity:0;pointer-events:none;transition:opacity 0.25s,transform 0.25s;z-index:300;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(50%) translateY(0)}
+/* Gender buttons */
+.gender-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
 
-.fade-scale{animation:fadeScale 0.35s cubic-bezier(0.34,1.56,0.64,1)}
-@keyframes fadeScale{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
-.shake{animation:shake 0.4s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.gender-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px;
+  background: var(--s2);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  cursor: pointer;
+  font-family: var(--font);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 700;
+  transition: border-color 0.15s, background 0.15s, transform 0.13s;
+}
+.gender-btn:active { transform: scale(0.96); }
+.gender-btn.selected {
+  border-color: var(--gold);
+  background: var(--gold-bg);
+  color: var(--gold);
+}
+.gender-btn.selected.female {
+  border-color: var(--teal);
+  background: var(--teal-bg);
+  color: var(--teal);
+}
+.gender-icon { font-size: 32px; line-height: 1; }
 
-.tts-status{position:fixed;top:calc(var(--sat) + 8px);left:12px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;z-index:999;pointer-events:none;opacity:0;transition:opacity 0.3s}
-.tts-status.show{opacity:1}
-.tts-status.ok{background:rgba(52,211,153,0.2);color:var(--green);border:1px solid rgba(52,211,153,0.3)}
-.tts-status.err{background:rgba(232,104,90,0.2);color:var(--coral);border:1px solid rgba(232,104,90,0.3)}
+/* Text area */
+.text-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  background: var(--s2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-family: var(--font);
+  font-size: 15px;
+  color: var(--text);
+  resize: none;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  transition: border-color 0.15s;
+  direction: rtl;
+}
+textarea:focus { outline: none; border-color: var(--gold); }
+
+/* Presets */
+.presets-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+.presets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.preset-chip {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.preset-chip:hover { border-color: var(--b2); color: var(--text2); background: rgba(255,255,255,0.04); }
+
+/* Speak button */
+.speak-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  border-radius: 14px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.13s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 4px 20px rgba(212,168,67,0.2);
+  letter-spacing: -0.3px;
+}
+.speak-btn:active { transform: scale(0.97); }
+.speak-btn:hover { box-shadow: 0 6px 28px rgba(212,168,67,0.35); }
+.speak-btn.female {
+  background: var(--teal);
+  box-shadow: 0 4px 20px rgba(42,181,168,0.2);
+}
+.speak-btn.female:hover { box-shadow: 0 6px 28px rgba(42,181,168,0.35); }
+.speak-btn.speaking { opacity: 0.7; cursor: default; }
+
+/* Stop button */
+.stop-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: var(--text3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: color 0.15s, border-color 0.15s;
+  display: none;
+}
+.stop-btn.visible { display: block; }
+.stop-btn:hover { color: var(--coral); border-color: var(--coral); }
+
+/* Status box */
+.status-box {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.6;
+  min-height: 56px;
+  transition: border-color 0.2s;
+}
+.status-box.ok   { border-color: rgba(52,211,153,0.3); color: var(--green); }
+.status-box.err  { border-color: rgba(232,104,90,0.3); color: var(--coral); }
+.status-box.info { border-color: var(--gold-br); color: var(--gold); }
+
+/* Voices list */
+.voices-section { margin-top: 24px; }
+.voices-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+.voices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.voice-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.voice-item:hover { border-color: var(--b2); background: rgba(255,255,255,0.03); }
+.voice-item.active { border-color: var(--gold); background: var(--gold-bg); }
+.voice-name { font-size: 12px; font-weight: 600; color: var(--text2); }
+.voice-item.active .voice-name { color: var(--gold); }
+.voice-lang { font-size: 10px; color: var(--text3); }
+.voice-play { font-size: 14px; opacity: 0.5; }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+/* wave animation */
+@keyframes wave {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(2.5); }
+}
+.wave-wrap {
+  display: none;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+.wave-wrap.visible { display: flex; }
+.wave-bar {
+  width: 3px;
+  height: 8px;
+  background: currentColor;
+  border-radius: 2px;
+  animation: wave 0.8s ease-in-out infinite;
+}
+.wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.wave-bar:nth-child(4) { animation-delay: 0.1s; }
+.wave-bar:nth-child(5) { animation-delay: 0.0s; }
 </style>
 </head>
 <body>
-<div id="app">
+<div class="card">
+  <div class="title">בדיקת <em>קול עברי</em></div>
+  <div class="subtitle">Web Speech API — ישירות מהדפדפן, ללא שרת</div>
 
-  <!-- ====== ONBOARDING ====== -->
-  <div class="screen" id="screen-onboarding">
-    <div class="onboarding-emoji">🤝</div>
-    <h1 class="onboarding-title">ברוך הבא ל<em>דילמות</em></h1>
-    <p class="onboarding-subtitle">משחק שיחה מהנה עם הילדים שלך.<br>גלה מה הם חושבים אמיתית.</p>
-    <div class="onboarding-form">
-
-      <label class="field-label">מי משחק עם הילד?</label>
-      <div class="role-pick-row" id="role-pick-row">
-        <div class="role-pick-opt selected" data-val="אבא">
-          <div class="role-pick-icon">👨</div>
-          <div class="role-pick-label">אבא</div>
-        </div>
-        <div class="role-pick-opt" data-val="אמא">
-          <div class="role-pick-icon">👩</div>
-          <div class="role-pick-label">אמא</div>
-        </div>
-        <div class="role-pick-opt" data-val="אחר">
-          <div class="role-pick-icon">🙋</div>
-          <div class="role-pick-label">אחר</div>
-        </div>
-      </div>
-
-      <div class="other-role-panel" id="other-role-panel">
-        <div class="other-role-grid" id="other-role-grid">
-          <div class="other-role-chip" data-val="סבא"><span class="other-role-chip-icon">👴</span>סבא</div>
-          <div class="other-role-chip" data-val="סבתא"><span class="other-role-chip-icon">👵</span>סבתא</div>
-          <div class="other-role-chip" data-val="דוד"><span class="other-role-chip-icon">🧔</span>דוד</div>
-          <div class="other-role-chip" data-val="דודה"><span class="other-role-chip-icon">👩‍🦱</span>דודה</div>
-          <div class="other-role-chip" data-val="מדריך"><span class="other-role-chip-icon">🏫</span>מדריך/ה</div>
-          <div class="other-role-chip" data-val="חבר משפחה"><span class="other-role-chip-icon">🫂</span>חבר משפחה</div>
-        </div>
-      </div>
-
-      <button class="btn btn-gold btn-full btn-lg" id="onboarding-next-btn">מתחילים</button>
-    </div>
+  <div class="text-label">בחר מין קורא</div>
+  <div class="gender-row">
+    <button class="gender-btn selected" id="btn-male" onclick="selectGender('male')">
+      <span class="gender-icon">👨</span>
+      גבר
+    </button>
+    <button class="gender-btn female" id="btn-female" onclick="selectGender('female')">
+      <span class="gender-icon">👩</span>
+      אישה
+    </button>
   </div>
 
-  <div class="screen" id="screen-home">
-    <div class="header">
-      <div class="header-logo">🤝 <span>דילמות</span></div>
-      <button class="header-btn" id="home-history-btn" title="היסטוריה">📚</button>
+  <div class="text-label">טקסט לקריאה</div>
+  <textarea id="tts-text" rows="3">שלום! אני הדמות המלווה שלך במשחק דילמות. בוא נתחיל!</textarea>
+
+  <div class="presets-label">טקסטים לדוגמא</div>
+  <div class="presets-row" id="presets"></div>
+
+  <button class="speak-btn" id="speak-btn" onclick="speak()">
+    <div class="wave-wrap" id="wave">
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
     </div>
-    <div class="home-greeting">
-      <div class="home-greeting-sub">שלום,</div>
-      <div class="home-greeting-name" id="greeting-name">אבא 👋</div>
-    </div>
-    <div class="home-content">
-      <div class="streak-bar" id="streak-bar" style="display:none">
-        <div class="streak-flame">🔥</div>
-        <div class="streak-info">
-          <div class="streak-num" id="streak-num">0</div>
-          <div class="streak-lbl">ימים רצופים</div>
-        </div>
-      </div>
-      <div class="kids-section">
-        <div class="section-heading">עם מי שוחקים היום?</div>
-        <div class="kids-scroll" id="kids-scroll">
-          <div class="kid-add-chip" id="add-kid-btn"><span>+</span><span style="font-size:11px;font-weight:600">הוסף</span></div>
-        </div>
-      </div>
-      <div>
-        <div class="section-heading">בחר קטגוריה</div>
-        <div class="cat-grid" id="cat-grid"></div>
-      </div>
+    <span id="speak-label">▶ השמע קול</span>
+  </button>
+  <button class="stop-btn" id="stop-btn" onclick="stopSpeaking()">■ עצור</button>
+
+  <div class="status-box" id="status">טוען קולות...</div>
+
+  <div class="divider"></div>
+
+  <div class="voices-section">
+    <div class="voices-title">קולות עבריים זמינים במכשיר שלך</div>
+    <div class="voices-list" id="voices-list">
+      <div style="color:var(--text3);font-size:12px;padding:8px 0">בודק...</div>
     </div>
   </div>
-
-  <div class="screen" id="screen-game">
-    <div class="game-header">
-      <div class="game-meta">
-        <button class="btn btn-ghost btn-sm" id="game-back-btn">← חזור</button>
-        <div class="badge badge-gold" id="game-cat-badge">קטגוריה</div>
-        <div class="game-progress-text" id="game-progress-text">1 / 5</div>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="game-progress-fill" style="width:20%"></div>
-      </div>
-    </div>
-    <div class="dilemma-wrapper">
-      <div class="dilemma-card-wrap">
-        <div class="phase-label phase-parent" id="phase-label">תורך להשיב קודם</div>
-        <div class="dilemma-question" id="dilemma-question">שאלת הדילמה...</div>
-      </div>
-      <div class="choices-list" id="choices-list"></div>
-      <button class="btn btn-gold btn-full" id="game-next-btn" style="display:none;margin-top:4px">המשך ←</button>
-    </div>
-  </div>
-
-  <div class="screen" id="screen-reveal">
-    <div class="reveal-header">
-      <h2 class="reveal-title" id="reveal-title">גילוי!</h2>
-      <div class="reveal-subtitle">ראו מה כל אחד בחר</div>
-    </div>
-    <div style="overflow-y:auto;flex:1;padding:0 0 20px;">
-      <div class="reveal-result" id="reveal-result">
-        <div class="reveal-result-icon" id="reveal-result-icon">🤝</div>
-        <div class="reveal-result-text" id="reveal-result-text">הסכמתם!</div>
-        <div class="reveal-result-sub" id="reveal-result-sub"></div>
-      </div>
-      <div class="reveal-cards">
-        <div class="reveal-person-card">
-          <div class="reveal-person-label"><span id="reveal-parent-label">אתה בחרת</span></div>
-          <div class="reveal-person-answer" id="reveal-parent-answer">—</div>
-        </div>
-        <div class="reveal-person-card">
-          <div class="reveal-person-label"><span id="reveal-child-label">הילד בחר</span></div>
-          <div class="reveal-person-answer" id="reveal-child-answer">—</div>
-        </div>
-      </div>
-      <div class="stats-bar">
-        <div class="stats-bar-label"><span>מה אחרים בחרו?</span></div>
-        <div id="reveal-stats-list"></div>
-      </div>
-      <div class="talk-question">
-        <div class="talk-label">שאלה לשיחה</div>
-        <div class="talk-text" id="reveal-talk-question">...</div>
-      </div>
-      <div style="display:flex;gap:10px;padding:0 0 8px;">
-        <button class="btn btn-outline btn-full" id="reveal-summary-btn">סיים סשן</button>
-        <button class="btn btn-gold btn-full" id="reveal-next-btn">דילמה הבאה →</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="screen" id="screen-summary">
-    <div class="header">
-      <div class="header-logo">סיכום</div>
-      <button class="header-btn" id="summary-share-btn" title="שתף">📤</button>
-    </div>
-    <div style="overflow-y:auto;flex:1;padding:0 20px 20px;">
-      <div class="summary-hero">
-        <div><span class="summary-big-num" id="summary-agreed">0</span><span class="summary-out-of" id="summary-total">/5</span></div>
-        <div class="summary-title" id="summary-title">הסכמות!</div>
-        <div class="summary-subtitle" id="summary-subtitle">סשן מדהים</div>
-      </div>
-      <hr class="divider">
-      <div class="section-heading" style="margin-bottom:12px;">פירוט הדילמות</div>
-      <div class="summary-breakdown" id="summary-breakdown"></div>
-      <div style="display:flex;flex-direction:column;gap:10px;padding-top:8px;">
-        <button class="btn btn-gold btn-full btn-lg" id="summary-new-btn">סשן חדש</button>
-        <button class="btn btn-outline btn-full" id="summary-home-btn">חזור לבית</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="screen" id="screen-history">
-    <div class="header">
-      <div class="header-logo">היסטוריה 📚</div>
-      <button class="header-btn" id="history-back-btn" title="חזור">✕</button>
-    </div>
-    <div class="history-list" id="history-list"></div>
-  </div>
-
-  <div class="modal-overlay" id="add-kid-modal">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div class="modal-title">הוסף ילד 👶</div>
-      <label class="field-label">שם הילד</label>
-      <input class="field-input" id="kid-name-input" type="text" placeholder="שם..." maxlength="12" style="margin-bottom:16px">
-      <label class="field-label">גיל</label>
-      <div class="age-row">
-        <button class="age-btn" id="age-minus-btn">−</button>
-        <div class="age-display"><div id="age-value">8</div><div class="age-lbl">שנים</div></div>
-        <button class="age-btn" id="age-plus-btn">+</button>
-      </div>
-      <label class="field-label">בחר אמוג'י</label>
-      <div class="emoji-picker" id="emoji-picker"></div>
-      <label class="companion-pick-label">בחר דמות מלווה</label>
-      <div class="companion-pick-row" id="companion-pick-row"></div>
-      <button class="btn btn-gold btn-full" id="save-kid-btn">שמור ✓</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="settings-modal">
-    <div class="modal">
-      <div class="modal-handle"></div>
-      <div class="modal-title">הגדרות ⚙️</div>
-      <div class="settings-section">
-        <div class="settings-section-title">קול הדמות</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div class="voice-row" id="voice-opt-boy" style="cursor:pointer">
-            <div class="voice-row-info">
-              <div class="voice-row-name">קול ילד</div>
-              <div class="voice-row-lang">Web Speech · עברית</div>
-            </div>
-            <button class="voice-test-btn" id="voice-test-boy" title="נגן דוגמא">▶</button>
-          </div>
-          <div class="voice-row" id="voice-opt-girl" style="cursor:pointer">
-            <div class="voice-row-info">
-              <div class="voice-row-name">קול ילדה</div>
-              <div class="voice-row-lang">Web Speech · עברית</div>
-            </div>
-            <button class="voice-test-btn" id="voice-test-girl" title="נגן דוגמא">▶</button>
-          </div>
-        </div>
-        <div id="tts-api-status" style="margin-top:10px;font-size:12px;color:var(--text3);text-align:center;min-height:18px"></div>
-      </div>
-      <div class="settings-section">
-        <div class="settings-section-title">כללי</div>
-        <div class="settings-row">
-          <div><div class="settings-row-label">קריאה בקול</div><div class="settings-row-sub">הדמות תקרא את הדילמות</div></div>
-          <label class="toggle"><input type="checkbox" id="settings-sound-toggle" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-row-label">רטט</div><div class="settings-row-sub">פידבק מישושי בלחיצות</div></div>
-          <label class="toggle"><input type="checkbox" id="settings-haptics-toggle" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
-        </div>
-      </div>
-      <button class="btn btn-gold btn-full" id="settings-save-btn">שמור ✓</button>
-    </div>
-  </div>
-
-  <nav class="bottom-nav" id="bottom-nav" style="display:none">
-    <div class="nav-item active" data-nav="home"><div class="nav-item-icon">🏠</div><div>בית</div></div>
-    <div class="nav-item" data-nav="history"><div class="nav-item-icon">📚</div><div>היסטוריה</div></div>
-    <div class="nav-item" data-nav="settings"><div class="nav-item-icon">⚙️</div><div>הגדרות</div></div>
-  </nav>
 </div>
 
-<div id="companion-wrap">
-  <div class="companion-row">
-    <div class="companion-char" id="companion-char"></div>
-    <div class="companion-bubble" id="companion-bubble">
-      <span id="companion-text"></span>
-      <div class="companion-bubble-actions" id="companion-actions"></div>
-    </div>
-  </div>
-  <button class="companion-mute" id="companion-mute-btn" title="השתק">🔇</button>
-</div>
-
-<div class="toast" id="toast"></div>
-
 <script>
-const Storage = (() => {
-  const KEY = 'dilemmas_state_v1';
-  const DEFAULTS = { parentName:'', parentRole:'אבא', kids:[], history:[], streak:0, lastPlayDate:null, seenIds:[], settings:{ sound:true, haptics:true } };
-  function load() { try { const raw = localStorage.getItem(KEY); if (!raw) return {...DEFAULTS}; return {...DEFAULTS, ...JSON.parse(raw)}; } catch { return {...DEFAULTS}; } }
-  function save(state) { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) { console.warn('Storage.save failed', e); } }
-  function addSeenId(id) { const s = load(); if (!s.seenIds.includes(id)) { s.seenIds.push(id); save(s); } }
-  function clearSeen() { const s = load(); s.seenIds = []; save(s); }
-  function addSession(session) {
-    const s = load(); s.history.unshift(session);
-    if (s.history.length > 50) s.history = s.history.slice(0,50);
-    const today = new Date().toDateString();
-    if (s.lastPlayDate !== today) { const yesterday = new Date(Date.now()-86400000).toDateString(); s.streak = (s.lastPlayDate === yesterday) ? s.streak+1 : 1; s.lastPlayDate = today; }
-    save(s);
-  }
-  return { load, save, addSeenId, clearSeen, addSession };
-})();
-</script>
-
-<script>
-const CATEGORIES = [
-  { id:'friendship', name:'חברות',    icon:'🤝', color:'var(--gold)' },
-  { id:'school',     name:'בית ספר',  icon:'🎒', color:'var(--teal)' },
-  { id:'family',     name:'משפחה',    icon:'👨‍👩‍👧', color:'var(--violet)' },
-  { id:'values',     name:'ערכים',    icon:'⚖️', color:'var(--coral)' },
-  { id:'adventure',  name:'הרפתקאות', icon:'🌍', color:'var(--green)' },
-  { id:'future',     name:'עתיד',     icon:'🚀', color:'#9B87F5' },
+const PRESETS = [
+  'שלום! אני הדמות המלווה שלך.',
+  'מצאת ארנק עם מאתיים שקל ואין בו תעודת זהות. מה עושים?',
+  'ראית את החבר שלך מעתיק במבחן. מה עושים?',
+  'גם אמא וגם בנה בחרו אותו דבר — הסכמה מלאה!',
 ];
-const DILEMMAS = {
-  friendship:[
-    {id:'fr-01',text:'החבר הכי טוב שלך אמר דבר לא נכון על ילד אחר בכיתה. האם תגיד לו שהוא טועה?',choices:['כן, חברים טובים אומרים אמת','לא, לא רוצה לקלקל את החברות','תלוי כמה חמור מה שהוא אמר'],question:'מה הופך חברות לחברות טובה, גם כשזה קשה?',age_min:6,age_max:16,stats:[62,18,20]},
-    {id:'fr-02',text:'יש לך שני חברים וכל אחד הזמין אותך לבר מצווה באותה שבת. לא יכול להיות בשניים. מה עושים?',choices:['הולכים למי שהזמין קודם','הולכים למי שיותר קרוב אלי','מסביר לשניהם ומקווה שיבינו'],question:'איך מחליטים בין שני חברים חשובים?',age_min:9,age_max:16,stats:[38,30,32]},
-    {id:'fr-03',text:'חבר שלך מצוין בכדורגל ולא בחרו אותו לקבוצה בגלל שהוא חדש. האם תוותר על מקומך בשבילו?',choices:['כן, זה נכון לעשות','לא, כל אחד צריך להתמודד לבד','אדבר עם המאמן במקום'],question:'מה ההבדל בין להיות חבר טוב לבין להקריב את עצמך?',age_min:7,age_max:16,stats:[28,42,30]},
-    {id:'fr-04',text:'ראית חבר שלך גונב ממכולת. לא ראה אותך. מה עושים?',choices:['מדבר איתו בצד בלי לספר למבוגרים','מספר להורים שלי','שואל אותו למה הוא עשה את זה'],question:'מתי צריך לספר למבוגרים על מה שחבר עשה?',age_min:8,age_max:16,stats:[44,22,34]},
-    {id:'fr-05',text:'יש בכיתה ילד שכולם מרחיקים אותו. החבר שלך אומר לך לא לשחק איתו. מה עושים?',choices:['משחק איתו, לא אכפת לי מה יגידו','לא משחק, לא רוצה בעיות','מנסה לשכנע את החבר שלי שנשחק ביחד'],question:'מה קשה יותר, להיות שונה או לראות ילד לבד?',age_min:6,age_max:16,stats:[55,12,33]},
-    {id:'fr-06',text:'חבר שלך מספר סוד שהוא אוהב ילדה בכיתה. היא שואלת אותך האם יש מישהו שאוהב אותה. מה עושים?',choices:['שומר סוד, לא אומר כלום','מספר לה, היא ישירה שאלה','אומר לחבר שיגיד לה לבד'],question:'מתי שמירת סוד עוזרת ומתי היא פוגעת?',age_min:9,age_max:16,stats:[52,14,34]},
-    {id:'fr-07',text:'חבר שלך תמיד מאחר ומשאיר אותך מחכה. כבר שלישי פעם. מה עושים?',choices:['מדבר איתו ישירות על זה','מתחיל להגיע מאוחר גם','מפסיק לקבוע איתו תורים'],question:'איך אומרים לחבר שמשהו מפריע לנו בלי לפגוע?',age_min:8,age_max:16,stats:[68,6,26]},
-  ],
-  school:[
-    {id:'sc-01',text:'ראית את החבר שלך מעתיק במבחן. המורה לא ראה. מה עושים?',choices:['לא אומר כלום, לא רוצה להיות מוסר','מספר למורה, זה לא הוגן לאחרים','אומר לחבר אחרי שיפסיק'],question:'מה ההבדל בין להיות מוסר לבין לעשות מה שנכון?',age_min:7,age_max:16,stats:[46,28,26]},
-    {id:'sc-02',text:'יש לך מבחן חשוב מחר ואתה מתקשה. חבר מציע לשתף איתך תשובות. מה עושים?',choices:['לא, עדיף כישלון ישר מהצלחה שקרית','כן, הלחץ גדול מדי','מבקש עזרה בהבנה, לא תשובות'],question:'למה הצלחה אמיתית חשובה יותר מציון גבוה?',age_min:10,age_max:16,stats:[42,15,43]},
-    {id:'sc-03',text:'המורה שלך שפכה על מישהו עלבון לפני כל הכיתה. מה עושים?',choices:['שותק, לא רוצה בעיות','אומר למנהל אחרי הכיתה','ניגש לילד ואומר לו שזה לא בסדר'],question:'מה עושים כשמבוגר מתנהג לא נכון?',age_min:8,age_max:16,stats:[24,36,40]},
-    {id:'sc-04',text:'בחרו אותך לנאום בטקס בית הספר. אתה מאוד פוחד מעמידה מול קהל. מה עושים?',choices:['מסכים, גאווה מנצחת פחד','מסרב, הבריאות הנפשית קודמת','מבקש לנאום בפני קבוצה קטנה יותר'],question:'איך מחליטים מתי לצאת מאזור הנוחות?',age_min:9,age_max:16,stats:[34,30,36]},
-    {id:'sc-05',text:'כל הכיתה שונאת מורה אחד. אתה בסך הכל אוהב אותו. מה עושים?',choices:['אומר לחברים שהוא בסדר','שותק, לא רוצה להיות שונה','ממשיך לנהוג איתו בכבוד אבל לא קורא לו נהדר'],question:'האם צריך להסכים עם רוב כדי להשתייך?',age_min:9,age_max:16,stats:[22,38,40]},
-    {id:'sc-06',text:'קיבלת עבודה בהיסטוריה שלא ממש עבדת עליה וקיבלת 95. מה עושים?',choices:['שמח ושותק','אומר למורה שאולי הוא שגה','לוקח את הציון אבל בפעם הבאה משקיע יותר'],question:'האם הגינות כלפי עצמך חשובה כמו כלפי אחרים?',age_min:10,age_max:16,stats:[50,18,32]},
-  ],
-  family:[
-    {id:'fa-01',text:'ההורים שלך רבים לעיתים קרובות בגללך על הציונים שלך. מה עושים?',choices:['מנסה ללמוד יותר','מדבר איתם ישירות שזה מציק לי','מדבר עם אחי או אחותי'],question:'איך ילד יכול לעזור כשיש מתח בבית?',age_min:9,age_max:16,stats:[40,38,22]},
-    {id:'fa-02',text:'אמא שלך בישלה ארוחת ערב. זה לא טעים לך כלל. מה עושים?',choices:['אוכל ולא אומר כלום, לא רוצה לפגוע','אומר בעדינות שלא ממש התחברתי לטעם','מבקש להכין משהו אחר'],question:'איך אומרים אמת שעלולה לכאוב?',age_min:6,age_max:16,stats:[44,42,14]},
-    {id:'fa-03',text:'אחיך הקטן שבר משהו יקר שלך. ההורים לא יודעים. מה עושים?',choices:['מספר להורים','מסדיר ביניכם בלי להגיד','כועס אבל מוחל לו, הוא קטן'],question:'מה עדיף, צדק או שמירת השקט המשפחתי?',age_min:7,age_max:16,stats:[32,28,40]},
-    {id:'fa-04',text:'אבא שלך לא עמד בהבטחה שהבטיח לך. זה קרה כבר כמה פעמים. מה עושים?',choices:['מדבר איתו ישירות על הרגש שלי','פשוט מפסיק לסמוך עליו','מספר לאמא'],question:'איך מדברים עם הורה על אכזבה?',age_min:8,age_max:16,stats:[58,20,22]},
-    {id:'fa-05',text:'יש לך הזדמנות ללכת למחנה קיץ מדהים, אבל סבתא חולה ומצפה לביקורים. מה עושים?',choices:['הולך למחנה, חיים ממשיכים','נשאר, סבתא חשובה ממחנה','מדבר עם ההורים ומחפש פתרון יצירתי'],question:'איך מאזנים בין הרצונות שלנו לחובות המשפחתיות?',age_min:9,age_max:16,stats:[28,36,36]},
-  ],
-  values:[
-    {id:'va-01',text:'מצאת ארנק עם מאתיים שקל ואין בו תעודת זהות. מה עושים?',choices:['שומר, ממצא זבל','מוסר למשטרה או שוטר','מנסה לאתר את הבעלים'],question:'אם אף אחד לא יידע, האם זה משנה מה עושים?',age_min:7,age_max:16,stats:[22,38,40]},
-    {id:'va-02',text:'ראית מישהו פורק אשפה ביער. אתה לבד איתו. מה עושים?',choices:['מתעמת איתו ישירות','שותק, לא רוצה בעיות','מצלם ומדווח לרשות'],question:'מתי שמירת הסביבה מחייבת אותנו להתמודד עם זרים?',age_min:8,age_max:16,stats:[26,30,44]},
-    {id:'va-03',text:'חנות נתנה לך עודף יותר מדי. מה עושים?',choices:['מחזיר, לא כסף שלי','שומר, טעות שלהם','מחזיר רק אם הסכום גדול'],question:'האם מגיע לי הוא תמיד הצדקה?',age_min:7,age_max:16,stats:[55,24,21]},
-    {id:'va-04',text:'אתה יכול לשקר כדי להציל חבר מצרה גדולה. מה עושים?',choices:['שוקר, חבר במקום ראשון','לא שוקר, כנות מעל הכל','מוצא דרך לעזור בלי לשקר'],question:'האם שקר לפעמים יכול להיות המעשה הנכון?',age_min:9,age_max:16,stats:[30,32,38]},
-  ],
-  adventure:[
-    {id:'ad-01',text:'חברים מציעים לך לטפס על גג של בניין. זה מסוכן אבל מגניב. מה עושים?',choices:['לא, בטיחות קודמת','כן, חיים פעם אחת','מציע הרפתקה אחרת פחות מסוכנת'],question:'איך מבחינים בין אומץ לאי שפיות?',age_min:10,age_max:16,stats:[60,10,30]},
-    {id:'ad-02',text:'יש לך הזדמנות לטייל חצי שנה בעולם אבל תפספס את שנת הלימודים. מה עושים?',choices:['הולך, ניסיון חיים מנצח לימודים','נשאר, לא שווה הסיכון','מחפש תכנית שמשלבת את שניהם'],question:'מה מלמדים יותר, ספרים או חוויות?',age_min:12,age_max:16,stats:[42,22,36]},
-    {id:'ad-03',text:'אתה יכול להכנס לחצר של שכן לקחת כדור שנפל שם. הוא לא בבית. מה עושים?',choices:['נכנס, זה הכדור שלי','מחכה שיחזור ומבקש','קונה כדור חדש'],question:'מה זה גבולות ולמה הם חשובים גם כשנוח לנו לחצות אותם?',age_min:6,age_max:14,stats:[22,58,20]},
-  ],
-  future:[
-    {id:'fu-01',text:'אבא שלך רוצה שתלך לרפואה. אתה חולם להיות מוסיקאי. מה עושים?',choices:['הולך לרפואה, הוא יודע טוב ממני','נלחם על החלום, זה חיי','לומד רפואה ומוסיקה במקביל'],question:'מי אמור להחליט מה יהיה מקצועך?',age_min:12,age_max:16,stats:[18,52,30]},
-    {id:'fu-02',text:'יש לך הצעת עבודה מדהימה שדורשת לעבור לעיר אחרת, רחוק מהמשפחה. מה עושים?',choices:['עובר, קריירה קודמת','נשאר, משפחה לפני הכל','מנסה לנהל מרחוק ולבקר לעיתים קרובות'],question:'מה מגדיר הצלחה בחיים, קריירה, משפחה, או משהו אחר?',age_min:13,age_max:16,stats:[40,28,32]},
-    {id:'fu-03',text:'אתה ממציא משהו שיכול לעשות לך הרבה כסף אבל יגרום לאנשים לאבד עבודה. מה עושים?',choices:['ממשיך, הקידמה הכרחית','עוצר, לא רוצה לפגוע','ממשיך אבל תורם חלק לעזרה לפגועים'],question:'האם אחריות על עתיד אחרים מוטלת עלינו?',age_min:12,age_max:16,stats:[30,20,50]},
-  ],
-};
 
-function getDilemmasForSession(categoryId, kidAge) {
-  const all = DILEMMAS[categoryId] || [];
-  const state = Storage.load();
-  const seen = state.seenIds || [];
-  let pool = all.filter(d => d.age_min <= kidAge && d.age_max >= kidAge && !seen.includes(d.id));
-  if (pool.length < 3) pool = all.filter(d => d.age_min <= kidAge && d.age_max >= kidAge);
-  for (let i = pool.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
-  return pool.slice(0,5);
+let selectedGender = 'male';
+let allVoices = [];
+let speaking = false;
+
+// Presets
+const presetsEl = document.getElementById('presets');
+PRESETS.forEach(p => {
+  const chip = document.createElement('button');
+  chip.className = 'preset-chip';
+  chip.textContent = p.slice(0, 22) + (p.length > 22 ? '…' : '');
+  chip.title = p;
+  chip.onclick = () => { document.getElementById('tts-text').value = p; };
+  presetsEl.appendChild(chip);
+});
+
+function selectGender(g) {
+  selectedGender = g;
+  document.getElementById('btn-male').classList.toggle('selected', g === 'male');
+  document.getElementById('btn-female').classList.toggle('selected', g === 'female');
+  const speakBtn = document.getElementById('speak-btn');
+  speakBtn.classList.toggle('female', g === 'female');
+  renderVoices();
 }
 
-function stripEmojis(text) {
-  return text
-    .replace(/[\u{1F000}-\u{1FFFF}]/gu, '')
-    .replace(/[\u{2600}-\u{27BF}]/gu, '')
-    .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
-    .replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-}
-</script>
-
-<script>
-const State = (() => {
-  let _state = { screen:'onboarding', parentName:'אבא', parentRole:'אבא', kids:[], selectedKidId:null, selectedCategory:null, session:{ dilemmas:[], currentIdx:0, phase:'parent', parentAnswers:[], childAnswers:[] }, history:[], streak:0 };
-  const _listeners = [];
-  function get() { return _state; }
-  function dispatch(action) { _state = reducer(_state, action); _listeners.forEach(fn => fn(_state, action)); }
-  function subscribe(fn) { _listeners.push(fn); }
-  return { get, dispatch, subscribe };
-})();
-
-function reducer(state, action) {
-  switch(action.type) {
-    case 'INIT': {
-      const saved = Storage.load();
-      const role = saved.parentRole || 'אבא';
-      return {
-        ...state,
-        parentName: role,
-        parentRole: role,
-        kids: saved.kids||[],
-        history: saved.history||[],
-        streak: saved.streak||0,
-        screen: saved._onboarded ? 'home' : 'onboarding',
-        selectedKidId: saved.kids&&saved.kids.length>0?saved.kids[0].id:null
-      };
-    }
-    case 'SET_PROFILE': {
-      const saved = Storage.load();
-      saved.parentRole = action.parentRole;
-      saved.parentName = action.parentRole;
-      saved._onboarded = true;
-      Storage.save(saved);
-      return {...state, parentName: action.parentRole, parentRole: action.parentRole};
-    }
-    case 'ADD_KID': { const saved = Storage.load(); const kid = {id:Date.now(), name:action.name, age:action.age, emoji:action.emoji, companionGender:action.companionGender||'boy'}; saved.kids=[...(saved.kids||[]),kid]; Storage.save(saved); return {...state, kids:saved.kids, selectedKidId:kid.id, screen:'home'}; }
-    case 'SELECT_KID': return {...state, selectedKidId:action.id};
-    case 'START_SESSION': { const kid = state.kids.find(k=>k.id===state.selectedKidId); const age = kid?kid.age:8; const dilemmas = getDilemmasForSession(action.category.id, age); return {...state, selectedCategory:action.category, screen:'game', session:{dilemmas, currentIdx:0, phase:'parent', parentAnswers:[], childAnswers:[]}}; }
-    case 'ANSWER': { const {session} = state; if (session.phase==='parent') { return {...state, session:{...session, phase:'child', parentAnswers:[...session.parentAnswers, action.choiceIndex]}}; } else { const childAnswers=[...session.childAnswers, action.choiceIndex]; return {...state, screen:'reveal', session:{...session, phase:'parent', childAnswers}}; } }
-    case 'NEXT_DILEMMA': { const {session} = state; const nextIdx = session.currentIdx+1; if (nextIdx>=session.dilemmas.length) return reducer(state,{type:'FINISH_SESSION'}); Storage.addSeenId(session.dilemmas[session.currentIdx].id); return {...state, screen:'game', session:{...session, currentIdx:nextIdx, phase:'parent'}}; }
-    case 'FINISH_SESSION': { const {session} = state; if (session.dilemmas[session.currentIdx]) Storage.addSeenId(session.dilemmas[session.currentIdx].id); const kid = state.kids.find(k=>k.id===state.selectedKidId); const agreed = session.parentAnswers.filter((ans,i)=>ans===session.childAnswers[i]).length; const sessionRecord = {id:Date.now(), kid:kid?kid.name:'?', category:state.selectedCategory?.name||'', categoryId:state.selectedCategory?.id||'', dilemmas:session.dilemmas.map((d,i)=>({id:d.id, text:d.text, parentAnswer:session.parentAnswers[i]??-1, childAnswer:session.childAnswers[i]??-1, agreed:session.parentAnswers[i]===session.childAnswers[i]})), agreed, total:session.dilemmas.length, date:new Date().toLocaleDateString('he-IL')}; Storage.addSession(sessionRecord); const saved = Storage.load(); return {...state, screen:'summary', history:saved.history, streak:saved.streak, currentSession:sessionRecord}; }
-    case 'GO_HOME': return {...state, screen:'home'};
-    case 'GO_HISTORY': return {...state, screen:'history'};
-    default: return state;
-  }
-}
-</script>
-
-<script>
-const Router = (() => {
-  const screens = {};
-  const nav = document.getElementById('bottom-nav');
-  function register(id) { screens[id] = document.getElementById(`screen-${id}`); }
-  function show(screenId) { Object.values(screens).forEach(s => s?.classList.remove('active')); screens[screenId]?.classList.add('active'); if (nav) nav.style.display = ['home','history'].includes(screenId)?'flex':'none'; }
-  ['onboarding','home','game','reveal','summary','history'].forEach(register);
-  return { show };
-})();
-
-function showToast(msg, duration=2000) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),duration); }
-function haptic(type='light') { try { const patterns={light:[30],medium:[50],heavy:[80,40,80],success:[40,20,40]}; if(navigator.vibrate) navigator.vibrate(patterns[type]||[30]); } catch {} }
-</script>
-
-<script>
-// ===== TTS — Web Speech API, no server needed =====
-const TTS = (() => {
-  let _muted = false;
-  let _voicesReady = false;
-  let _pendingSpeak = null;
-
-  // Load voices — on iOS they load async
-  function _loadVoices() {
-    const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-    if (voices.length > 0) {
-      _voicesReady = true;
-      if (_pendingSpeak) { _pendingSpeak(); _pendingSpeak = null; }
-    }
-  }
-  if (window.speechSynthesis) {
-    window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
-    _loadVoices();
-    // iOS fallback: retry after short delay
-    setTimeout(_loadVoices, 500);
-    setTimeout(_loadVoices, 1500);
-  }
-
-  function _getBestHebrew() {
-    if (!window.speechSynthesis) return null;
-    const voices = window.speechSynthesis.getVoices();
-    // Prefer local (Siri) voice on iOS
-    return voices.find(v => v.lang === 'he-IL' && v.localService) ||
-           voices.find(v => v.lang === 'he-IL') ||
-           voices.find(v => v.lang.startsWith('he')) ||
-           null;
-  }
-
-  function _doSpeak(text, onDone) {
-    if (!window.speechSynthesis) { if (onDone) onDone(); return; }
-    window.speechSynthesis.cancel();
-
-    const clean = stripEmojis(text);
-    if (!clean) { if (onDone) onDone(); return; }
-
-    const utt = new SpeechSynthesisUtterance(clean);
-    utt.lang = 'he-IL';
-    utt.rate = 1.15;   // faster = less robotic feeling
-    utt.pitch = 1.0;
-    utt.volume = 1.0;
-
-    const voice = _getBestHebrew();
-    if (voice) utt.voice = voice;
-
-    if (onDone) {
-      utt.onend = () => onDone();
-      utt.onerror = () => onDone();
-    }
-
-    window.speechSynthesis.speak(utt);
-
-    // iOS bug: speechSynthesis can pause itself after ~15s
-    // Keep-alive ping every 10s
-    const keepAlive = setInterval(() => {
-      if (!window.speechSynthesis.speaking) { clearInterval(keepAlive); return; }
-      window.speechSynthesis.pause();
-      window.speechSynthesis.resume();
-    }, 10000);
-    utt.onend = () => { clearInterval(keepAlive); if (onDone) onDone(); };
-    utt.onerror = () => { clearInterval(keepAlive); if (onDone) onDone(); };
-  }
-
-  function speak(text) {
-    if (_muted || !text) return;
-    if (!_voicesReady) { _pendingSpeak = () => _doSpeak(text, null); return; }
-    _doSpeak(text, null);
-  }
-
-  function speakAndNotify(text, gender, onDone) {
-    if (!text) { if (onDone) onDone(); return; }
-    if (!_voicesReady) { _pendingSpeak = () => _doSpeak(text, onDone); return; }
-    _doSpeak(text, onDone);
-  }
-
-  function stop() {
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    _pendingSpeak = null;
-  }
-
-  function setMuted(val) { _muted = val; if (val) stop(); }
-  function isMuted() { return _muted; }
-  function hasHebrew() { return !!_getBestHebrew(); }
-
-  return { speak, speakAndNotify, stop, setMuted, isMuted, hasHebrew };
-})();
-</script>
-
-<script>
-const COMPANION_SVGS = {
-  boy:`<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg"><g class="companion-body breathe"><rect x="16" y="40" width="28" height="26" rx="8" fill="#3B82F6"/><path d="M24 40 L30 48 L36 40" fill="none" stroke="#60A5FA" stroke-width="1.5" stroke-linecap="round"/><rect x="5" y="41" width="11" height="7" rx="3.5" fill="#3B82F6"/><rect x="44" y="41" width="11" height="7" rx="3.5" fill="#3B82F6"/><circle cx="7" cy="51" r="4.5" fill="#FBBF7C"/><circle cx="53" cy="51" r="4.5" fill="#FBBF7C"/><rect x="18" y="64" width="10" height="13" rx="5" fill="#1E3A5F"/><rect x="32" y="64" width="10" height="13" rx="5" fill="#1E3A5F"/><ellipse cx="23" cy="77" rx="7" ry="3.5" fill="#111"/><ellipse cx="37" cy="77" rx="7" ry="3.5" fill="#111"/><rect x="25" y="33" width="10" height="9" rx="4" fill="#FBBF7C"/><circle cx="30" cy="26" r="16" fill="#FBBF7C"/><path d="M14 22 Q14 10 30 10 Q46 10 46 22 Q42 14 30 14 Q18 14 14 22Z" fill="#92400E"/><rect x="14" y="18" width="5" height="8" rx="2.5" fill="#92400E"/><rect x="41" y="18" width="5" height="8" rx="2.5" fill="#92400E"/><g class="companion-eye"><ellipse cx="23" cy="26" rx="3.5" ry="3.5" fill="white"/><circle cx="24" cy="26" r="2" fill="#1E3A5F"/><circle cx="24.8" cy="25.2" r="0.7" fill="white"/></g><g class="companion-eye"><ellipse cx="37" cy="26" rx="3.5" ry="3.5" fill="white"/><circle cx="38" cy="26" r="2" fill="#1E3A5F"/><circle cx="38.8" cy="25.2" r="0.7" fill="white"/></g><ellipse cx="30" cy="30" rx="1.5" ry="1" fill="#E9996A"/><path d="M25 34 Q30 38 35 34" fill="none" stroke="#C0623A" stroke-width="1.5" stroke-linecap="round"/><circle cx="19" cy="31" r="3.5" fill="rgba(240,100,80,0.2)"/><circle cx="41" cy="31" r="3.5" fill="rgba(240,100,80,0.2)"/></g></svg>`,
-  girl:`<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg"><g class="companion-body breathe"><path d="M14 40 Q14 70 30 70 Q46 70 46 40 L40 38 L30 44 L20 38Z" fill="#EC4899"/><path d="M22 40 Q22 60 30 62 Q38 60 38 40" fill="rgba(255,255,255,0.1)"/><rect x="5" y="41" width="11" height="7" rx="3.5" fill="#EC4899"/><rect x="44" y="41" width="11" height="7" rx="3.5" fill="#EC4899"/><circle cx="7" cy="51" r="4.5" fill="#FBBF7C"/><circle cx="53" cy="51" r="4.5" fill="#FBBF7C"/><ellipse cx="24" cy="72" rx="6" ry="3" fill="#BE185D"/><ellipse cx="36" cy="72" rx="6" ry="3" fill="#BE185D"/><rect x="25" y="33" width="10" height="9" rx="4" fill="#FBBF7C"/><circle cx="30" cy="26" r="16" fill="#FBBF7C"/><ellipse cx="30" cy="20" rx="16" ry="13" fill="#92400E"/><path d="M14 22 Q14 8 30 8 Q46 8 46 22 Q43 12 30 12 Q17 12 14 22Z" fill="#B45309"/><ellipse cx="10" cy="20" rx="5" ry="8" fill="#B45309"/><ellipse cx="50" cy="20" rx="5" ry="8" fill="#B45309"/><circle cx="14.5" cy="15" r="3" fill="#F9A8D4"/><circle cx="45.5" cy="15" r="3" fill="#F9A8D4"/><g class="companion-eye"><ellipse cx="23" cy="27" rx="3.5" ry="3.5" fill="white"/><circle cx="24" cy="27" r="2" fill="#1E3A5F"/><circle cx="24.8" cy="26.2" r="0.7" fill="white"/></g><g class="companion-eye"><ellipse cx="37" cy="27" rx="3.5" ry="3.5" fill="white"/><circle cx="38" cy="27" r="2" fill="#1E3A5F"/><circle cx="38.8" cy="26.2" r="0.7" fill="white"/></g><ellipse cx="30" cy="31" rx="1.5" ry="1" fill="#E9996A"/><path d="M25 35 Q30 39 35 35" fill="none" stroke="#C0623A" stroke-width="1.5" stroke-linecap="round"/><circle cx="19" cy="32" r="4" fill="rgba(240,100,100,0.25)"/><circle cx="41" cy="32" r="4" fill="rgba(240,100,100,0.25)"/></g></svg>`
-};
-
-const Companion = (() => {
-  let _hideTimer = null;
-  let _currentGender = 'boy';
-  const wrap=document.getElementById('companion-wrap');
-  const charEl=document.getElementById('companion-char');
-  const textEl=document.getElementById('companion-text');
-  const actionsEl=document.getElementById('companion-actions');
-  const muteBtn=document.getElementById('companion-mute-btn');
-
-  muteBtn.addEventListener('click', () => {
-    const nowMuted=!TTS.isMuted();
-    TTS.setMuted(nowMuted);
-    muteBtn.textContent=nowMuted?'🔈':'🔇';
-    muteBtn.title=nowMuted?'הפעל קול':'השתק';
-  });
-
-  function show(text, actions=[], emotion='happy', autohide=0) {
-    clearTimeout(_hideTimer);
-    charEl.innerHTML=COMPANION_SVGS[_currentGender]||COMPANION_SVGS.boy;
-    textEl.textContent=text;
-    actionsEl.innerHTML='';
-    actions.forEach(({label,onClick})=>{
-      const btn=document.createElement('button'); btn.className='companion-action-btn'; btn.textContent=label;
-      btn.addEventListener('click',()=>{ onClick(); hide(); });
-      actionsEl.appendChild(btn);
-    });
-    const body=charEl.querySelector('.companion-body');
-    if (body) {
-      body.classList.remove('bounce','wiggle','excited','breathe');
-      void body.offsetWidth;
-      const animMap={happy:'bounce',excited:'excited',curious:'wiggle',surprised:'excited',calm:'breathe'};
-      body.classList.add(animMap[emotion]||'bounce');
-      setTimeout(()=>{ body.classList.remove('bounce','wiggle','excited'); body.classList.add('breathe'); },1200);
-    }
-    document.body.classList.add('companion-visible');
-    wrap.classList.add('visible');
-    const savedSettings=Storage.load().settings;
-    if (savedSettings?.sound!==false) TTS.speak(text, _currentGender);
-    if (autohide>0) _hideTimer=setTimeout(hide, autohide);
-  }
-
-  function hide() { clearTimeout(_hideTimer); TTS.stop(); wrap.classList.remove('visible'); document.body.classList.remove('companion-visible'); }
-  function setGender(gender) { _currentGender=gender; }
-  function speak(text) { TTS.speak(text, _currentGender); }
-  return { show, hide, setGender, speak };
-})();
-
-const COMPANION_SCRIPTS = {
-  sessionStart(catName, kidName, onDone) {
-    Companion.show(
-      `היי ${kidName}! היום משחקים דילמות בנושא ${catName}. אני אקרא לכם את השאלות, מוכנים?`,
-      [{label:'מוכנים!', onClick:()=>{ if(onDone) onDone(); }}],
-      'excited'
-    );
-  },
-  readDilemmaParent(text, choices) {
-    const short = text.length>80 ? text.slice(0,80)+'...' : text;
-    Companion.show(
-      short,
-      [{label:'שוב', onClick:()=>Companion.speak(text)},{label:'הבנתי', onClick:()=>{}}],
-      'calm'
-    );
-  },
-  childsTurn(kidName, age) {
-    const msg = age<=7
-      ? `עכשיו תורך ${kidName}! תקשיב טוב לשאלה ובחר מה שאתה חושב!`
-      : `עכשיו ${kidName} בוחר! ההורה כבר ענה אבל ${kidName} לא יודע מה. תבחר לפי הלב!`;
-    Companion.show(msg,[],'happy',4000);
-  },
-  onAgree(kidName) {
-    const msgs=[
-      `הסכמתם! ${kidName} וה${State.get().parentRole} בחרו אותו דבר! מדהים!`,
-      `תאום מושלם! ${kidName} וה${State.get().parentRole} חשבו אותו דבר!`,
-      `וואו, הסכמה! אתם מבינים אחד את השני!`
-    ];
-    Companion.show(msgs[Math.floor(Math.random()*msgs.length)],[],'excited',4000);
-  },
-  onDisagree(kidName) {
-    const msgs=[
-      `בחרתם שונה! זה מעניין, למה ${kidName} חשב אחרת?`,
-      `שתי דעות שונות! זאת שיחה מעניינת שתהיה לכם!`,
-      `לא הסכמתם הפעם, ויש פה הזדמנות לשיחה נהדרת!`
-    ];
-    Companion.show(msgs[Math.floor(Math.random()*msgs.length)],[],'curious',4000);
-  },
-};
-
-let selectedCompanionGender = 'boy';
-function renderCompanionPicker() {
-  const row=document.getElementById('companion-pick-row'); if(!row) return;
-  row.innerHTML='';
-  ['boy','girl'].forEach(gender=>{
-    const opt=document.createElement('div'); opt.className=`companion-pick-opt${gender===selectedCompanionGender?' selected':''}`;
-    opt.innerHTML=`${COMPANION_SVGS[gender]}<div class="companion-pick-name">${gender==='boy'?'ילד':'ילדה'}</div>`;
-    opt.addEventListener('click',()=>{ selectedCompanionGender=gender; row.querySelectorAll('.companion-pick-opt').forEach(o=>o.classList.remove('selected')); opt.classList.add('selected'); });
-    row.appendChild(opt);
-  });
-}
-</script>
-
-<script>
-// ===== ONBOARDING =====
-let _onboardingRole = 'אבא';
-let _onboardingOtherRole = null;
-
-function renderOnboarding() {
-  const btn = document.getElementById('onboarding-next-btn');
-  const roleRow = document.getElementById('role-pick-row');
-  const otherPanel = document.getElementById('other-role-panel');
-
-  roleRow.querySelectorAll('.role-pick-opt').forEach(opt => {
-    opt.addEventListener('click', () => {
-      roleRow.querySelectorAll('.role-pick-opt').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
-      _onboardingRole = opt.dataset.val;
-      haptic('light');
-      if (_onboardingRole === 'אחר') {
-        otherPanel.classList.add('visible');
-        _onboardingOtherRole = null;
-        document.querySelectorAll('.other-role-chip').forEach(c => c.classList.remove('selected'));
-      } else {
-        otherPanel.classList.remove('visible');
-        _onboardingOtherRole = null;
-      }
-    });
-  });
-
-  document.querySelectorAll('.other-role-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.other-role-chip').forEach(c => c.classList.remove('selected'));
-      chip.classList.add('selected');
-      _onboardingOtherRole = chip.dataset.val;
-      haptic('light');
-    });
-  });
-
-  btn.addEventListener('click', () => {
-    let finalRole = _onboardingRole;
-    if (_onboardingRole === 'אחר') {
-      if (!_onboardingOtherRole) { showToast('בחר מי אתה קודם'); otherPanel.classList.add('visible'); return; }
-      finalRole = _onboardingOtherRole;
-    }
-    haptic('medium');
-    State.dispatch({type:'SET_PROFILE', parentRole: finalRole});
-    State.dispatch({type:'GO_HOME'});
-  });
+function loadVoices() {
+  allVoices = window.speechSynthesis.getVoices();
+  renderVoices();
+  updateStatus();
 }
 
-function renderHome(state) {
-  const roleEmojis = {'אבא':'👨','אמא':'👩','סבא':'👴','סבתא':'👵','דוד':'🧔','דודה':'👩‍🦱','מדריך':'🏫','חבר משפחה':'🫂'};
-  const emoji = roleEmojis[state.parentRole] || '👋';
-  document.getElementById('greeting-name').innerHTML = `שלום <em>${state.parentRole}</em> ${emoji}`;
-  const streakBar = document.getElementById('streak-bar');
-  if (state.streak > 1) { streakBar.style.display='flex'; document.getElementById('streak-num').textContent=state.streak; }
-  renderKids(state);
-  const grid = document.getElementById('cat-grid'); grid.innerHTML = '';
-  CATEGORIES.forEach(cat => {
-    const count = (DILEMMAS[cat.id]||[]).length;
-    const card = document.createElement('div'); card.className='cat-card';
-    card.innerHTML = `<div class="cat-icon">${cat.icon}</div><div><div class="cat-name">${cat.name}</div><div class="cat-count">${count} דילמות</div></div>`;
-    card.addEventListener('click', () => {
-      if (!state.selectedKidId && state.kids.length>0) { showToast('בחר ילד קודם'); document.getElementById('kids-scroll').classList.add('shake'); setTimeout(()=>document.getElementById('kids-scroll').classList.remove('shake'),500); return; }
-      if (state.kids.length===0) { showToast('הוסף ילד קודם'); return; }
-      haptic('medium'); State.dispatch({type:'START_SESSION', category:cat});
-    });
-    grid.appendChild(card);
-  });
+function getHebrewVoices() {
+  return allVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith('he'));
 }
 
-function renderKids(state) {
-  const scroll = document.getElementById('kids-scroll');
-  scroll.querySelectorAll('.kid-chip').forEach(c=>c.remove());
-  const addBtn = document.getElementById('add-kid-btn');
-  state.kids.forEach(kid => {
-    const chip = document.createElement('div');
-    chip.className = `kid-chip${state.selectedKidId===kid.id?' selected':''}`;
-    chip.innerHTML = `<div class="kid-chip-emoji">${kid.emoji}</div><div class="kid-chip-name">${kid.name}</div>`;
-    chip.addEventListener('click', () => { haptic('light'); State.dispatch({type:'SELECT_KID', id:kid.id}); });
-    scroll.insertBefore(chip, addBtn);
-  });
-}
+function getBestVoice(gender) {
+  const he = getHebrewVoices();
+  if (he.length === 0) return null;
 
-const EMOJIS = ['👦','👧','🧒','👶','🦸','🧙','🐻','🦁','🦊','🐯','🐸','🐺','🌟','⚡','🌈'];
-let selectedEmoji = EMOJIS[0];
-let kidAge = 8;
+  // Try to detect gender from voice name
+  const femaleKeywords = ['female','woman','girl','נשי','f','miriam','carmit','tami','dana','sarah'];
+  const maleKeywords   = ['male','man','boy','גברי','m','yosef','yonatan','ronen','aaron'];
 
-function openAddKidModal() {
-  selectedEmoji=EMOJIS[0]; selectedCompanionGender='boy'; kidAge=8;
-  document.getElementById('age-value').textContent=kidAge;
-  document.getElementById('kid-name-input').value='';
-  const picker = document.getElementById('emoji-picker'); picker.innerHTML='';
-  EMOJIS.forEach(e => {
-    const el = document.createElement('div'); el.className=`emoji-opt${e===selectedEmoji?' selected':''}`; el.textContent=e;
-    el.addEventListener('click', () => { selectedEmoji=e; picker.querySelectorAll('.emoji-opt').forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); });
-    picker.appendChild(el);
-  });
-  renderCompanionPicker();
-  document.getElementById('add-kid-modal').classList.add('open');
-  setTimeout(()=>document.getElementById('kid-name-input').focus(),300);
-}
-function closeAddKidModal() { document.getElementById('add-kid-modal').classList.remove('open'); }
-
-function renderGame(state) {
-  const {session, selectedCategory} = state;
-  const {dilemmas, currentIdx, phase} = session;
-  const dilemma = dilemmas[currentIdx]; if (!dilemma) return;
-  const kid = state.kids.find(k=>k.id===state.selectedKidId);
-  const kidName = kid?kid.name:'הילד';
-  const parentLabel = state.parentRole || 'אבא';
-  document.getElementById('game-cat-badge').textContent=`${selectedCategory?.icon} ${selectedCategory?.name}`;
-  const prog=currentIdx+1, total=dilemmas.length;
-  document.getElementById('game-progress-text').textContent=`${prog} / ${total}`;
-  document.getElementById('game-progress-fill').style.width=`${(prog/total)*100}%`;
-  const phaseEl = document.getElementById('phase-label');
-  if (phase==='parent') {
-    phaseEl.className='phase-label phase-parent';
-    phaseEl.textContent=`${parentLabel}, תורך להשיב קודם`;
+  if (gender === 'female') {
+    const found = he.find(v => femaleKeywords.some(k => v.name.toLowerCase().includes(k)));
+    return found || he[0];
   } else {
-    phaseEl.className='phase-label phase-child';
-    phaseEl.textContent=`עכשיו תור ${kidName}`;
+    const found = he.find(v => maleKeywords.some(k => v.name.toLowerCase().includes(k)));
+    return found || he[0];
   }
-  document.getElementById('dilemma-question').textContent=dilemma.text;
-  if (phase==='parent' && currentIdx > 0) {
-    setTimeout(()=>COMPANION_SCRIPTS.readDilemmaParent(dilemma.text, dilemma.choices), 500);
+}
+
+function renderVoices() {
+  const list = document.getElementById('voices-list');
+  const heVoices = getHebrewVoices();
+  const best = getBestVoice(selectedGender);
+
+  if (heVoices.length === 0) {
+    list.innerHTML = `<div style="color:var(--coral);font-size:12px;padding:8px 0">⚠️ לא נמצאו קולות עבריים במכשיר זה</div>`;
+    return;
   }
-  const list = document.getElementById('choices-list'); list.innerHTML='';
-  dilemma.choices.forEach((choice, i) => {
-    const btn = document.createElement('button'); btn.className='choice-btn';
-    btn.innerHTML=`<div class="choice-btn-dot"></div><span>${choice}</span>`;
-    btn.addEventListener('click', () => { haptic('light'); list.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); document.getElementById('game-next-btn').style.display='flex'; document.getElementById('game-next-btn').dataset.choice=i; });
-    list.appendChild(btn);
-  });
-  const nextBtn = document.getElementById('game-next-btn');
-  nextBtn.style.display='none';
-  nextBtn.textContent=phase==='parent'?'עכשיו תור הילד →':'גלה תשובות!';
-  nextBtn.onclick = () => { const choiceIndex=parseInt(nextBtn.dataset.choice); if(isNaN(choiceIndex)) return; haptic('medium'); State.dispatch({type:'ANSWER', choiceIndex}); };
-}
 
-function renderReveal(state) {
-  const {session} = state;
-  const {dilemmas, currentIdx, parentAnswers, childAnswers} = session;
-  const dilemma = dilemmas[currentIdx]; if (!dilemma) return;
-  const kid = state.kids.find(k=>k.id===state.selectedKidId);
-  const kidName = kid?kid.name:'הילד';
-  const parentLabel = state.parentRole || 'אבא';
-  const parentChoice=parentAnswers[currentIdx], childChoice=childAnswers[currentIdx];
-  const agreed = parentChoice===childChoice;
-  document.getElementById('reveal-title').textContent=agreed?'הסכמתם!':'בחרתם שונה';
-  document.getElementById('reveal-result-icon').textContent=agreed?'🤝':'💬';
-  document.getElementById('reveal-result-text').textContent=agreed?'הסכמתם!':'בחרתם שונה';
-  document.getElementById('reveal-result-sub').textContent=agreed?`גם ${parentLabel} וגם ${kidName} בחרתם אותו דבר!`:`מעניין, יש כאן שיחה מעניינת!`;
-  document.getElementById('reveal-result').style.background=agreed?'rgba(52,211,153,0.08)':'rgba(232,104,90,0.08)';
-  document.getElementById('reveal-parent-label').textContent=`${parentLabel} בחר/ה`;
-  document.getElementById('reveal-child-label').textContent=`${kidName} בחר/ה`;
-  document.getElementById('reveal-parent-answer').textContent=dilemma.choices[parentChoice]??'—';
-  document.getElementById('reveal-child-answer').textContent=dilemma.choices[childChoice]??'—';
-  const statsList = document.getElementById('reveal-stats-list'); statsList.innerHTML='';
-  dilemma.choices.forEach((choice, i) => {
-    const pct=dilemma.stats?.[i]||Math.round(Math.random()*30+10);
-    const row=document.createElement('div'); row.className='stats-choice-bar';
-    row.innerHTML=`<div class="stats-choice-name">${choice}</div><div class="stats-bar-fill"><div class="stats-bar-inner" data-pct="${pct}" style="width:0%"></div></div><div class="stats-pct">${pct}%</div>`;
-    statsList.appendChild(row);
-  });
-  requestAnimationFrame(()=>{ statsList.querySelectorAll('.stats-bar-inner').forEach(el=>{ el.style.width=el.dataset.pct+'%'; }); });
-  document.getElementById('reveal-talk-question').textContent=dilemma.question;
-  const isLast=currentIdx>=dilemmas.length-1;
-  const nextBtn=document.getElementById('reveal-next-btn'), summaryBtn=document.getElementById('reveal-summary-btn');
-  nextBtn.style.display=isLast?'none':'flex'; summaryBtn.style.display='flex';
-  summaryBtn.textContent=isLast?'ראה סיכום':'סיים סשן';
-  nextBtn.onclick=()=>{ haptic('light'); State.dispatch({type:'NEXT_DILEMMA'}); };
-  summaryBtn.onclick=()=>{ haptic('medium'); State.dispatch({type:'FINISH_SESSION'}); };
-}
-
-function renderSummary(state) {
-  const session=state.currentSession; if(!session) return;
-  const {agreed,total,kid,dilemmas:sessionDilemmas}=session;
-  document.getElementById('summary-agreed').textContent=agreed;
-  document.getElementById('summary-total').textContent=`/${total}`;
-  document.getElementById('summary-title').textContent=agreed>=total*0.8?'הסכמות!':agreed>=total*0.5?'הסכמות מגניבות!':'שיחה מעניינת!';
-  document.getElementById('summary-subtitle').textContent=`${kid} ו${state.parentRole} בחרתם יחד ${agreed} מתוך ${total}`;
-  const bd=document.getElementById('summary-breakdown'); bd.innerHTML='';
-  sessionDilemmas.forEach(d => {
-    const dilemmaData=Object.values(DILEMMAS).flat().find(x=>x.id===d.id);
-    const item=document.createElement('div'); item.className='summary-item';
-    item.innerHTML=`<div class="summary-item-icon">${d.agreed?'✅':'🔄'}</div><div class="summary-item-text">${dilemmaData?dilemmaData.text.slice(0,60)+(dilemmaData.text.length>60?'…':''):d.id}</div><div class="summary-item-result ${d.agreed?'result-agree':'result-disagree'}">${d.agreed?'הסכמה':'שונה'}</div>`;
-    bd.appendChild(item);
-  });
-}
-
-function renderHistory(state) {
-  const list=document.getElementById('history-list'); list.innerHTML='';
-  if (!state.history||state.history.length===0) { list.innerHTML=`<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-title">אין סשנים עדיין</div><div class="empty-state-desc">השחק את הסשן הראשון שלך!</div></div>`; return; }
-  state.history.slice(0,20).forEach(session => {
-    const item=document.createElement('div'); item.className='history-item';
-    item.innerHTML=`<div class="history-score-circle">${session.agreed}/${session.total}</div><div class="history-info"><div class="history-kid">${session.kid} · ${session.category}</div><div class="history-meta">${session.date}</div></div>`;
+  list.innerHTML = '';
+  heVoices.forEach(v => {
+    const item = document.createElement('div');
+    item.className = 'voice-item' + (v === best ? ' active' : '');
+    item.innerHTML = `
+      <div>
+        <div class="voice-name">${v.name}</div>
+        <div class="voice-lang">${v.lang} ${v.localService ? '· מקומי' : '· רשת'}</div>
+      </div>
+      <span class="voice-play">▶</span>
+    `;
+    item.onclick = () => {
+      // Play this specific voice
+      window.speechSynthesis.cancel();
+      const utt = new SpeechSynthesisUtterance(document.getElementById('tts-text').value || 'שלום');
+      utt.voice = v;
+      utt.lang = v.lang;
+      utt.rate = 0.88;
+      window.speechSynthesis.speak(utt);
+    };
     list.appendChild(item);
   });
 }
-</script>
 
-<script>
-State.subscribe((state, action) => {
-  Router.show(state.screen);
-  switch(state.screen) {
-    case 'onboarding': break;
-    case 'home':    renderHome(state);    break;
-    case 'game':    renderGame(state);    break;
-    case 'reveal':  renderReveal(state);  break;
-    case 'summary': renderSummary(state); break;
-    case 'history': renderHistory(state); break;
+function updateStatus() {
+  const statusEl = document.getElementById('status');
+  const heVoices = getHebrewVoices();
+  const total = allVoices.length;
+
+  if (heVoices.length === 0) {
+    statusEl.className = 'status-box err';
+    statusEl.textContent = `⚠️ לא נמצאו קולות עבריים. נמצאו ${total} קולות אחרים. ייתכן שצריך להוריד חבילת קולות עברית בהגדרות המכשיר.`;
+  } else {
+    statusEl.className = 'status-box ok';
+    statusEl.textContent = `✓ נמצאו ${heVoices.length} קולות עבריים מתוך ${total} קולות כולל. לחץ על קול ברשימה כדי לשמוע אותו, או לחץ השמע קול למיטבי.`;
   }
-  const kid=state.kids.find(k=>k.id===state.selectedKidId);
-  const kidName=kid?kid.name:'ילד';
-  const kidAge=kid?kid.age:8;
-  if (kid&&kid.companionGender) Companion.setGender(kid.companionGender);
+}
 
-  if (action.type==='START_SESSION') {
-    const catName=state.selectedCategory?.name||'';
-    const firstDilemma=state.session.dilemmas[0];
-    setTimeout(()=>{
-      COMPANION_SCRIPTS.sessionStart(catName, kidName, ()=>{
-        if(firstDilemma) {
-          setTimeout(()=>COMPANION_SCRIPTS.readDilemmaParent(firstDilemma.text, firstDilemma.choices), 300);
-        }
-      });
-    }, 400);
-  }
+function speak() {
+  if (speaking) return;
+  const text = document.getElementById('tts-text').value.trim();
+  if (!text) return;
 
-  if (action.type==='ANSWER'&&state.screen==='game') setTimeout(()=>COMPANION_SCRIPTS.childsTurn(kidName,kidAge),300);
-  if (action.type==='ANSWER'&&state.screen==='reveal') {
-    const {session}=state; const idx=session.currentIdx;
-    const agreed=session.childAnswers[idx]===session.parentAnswers[idx];
-    setTimeout(()=>{ if(agreed) COMPANION_SCRIPTS.onAgree(kidName); else COMPANION_SCRIPTS.onDisagree(kidName); },600);
-  }
-  if (['summary','history','home'].includes(state.screen)) Companion.hide();
-});
+  const voice = getBestVoice(selectedGender);
+  const statusEl = document.getElementById('status');
 
-// ===== SETTINGS =====
-const Settings = (() => {
-  const PREVIEW_TEXT = 'שלום! אני הדמות המלווה שלך במשחק דילמות. בוא נתחיל!';
-
-  function _updateVoiceUI(gender) {
-    ['boy','girl'].forEach(g=>{ const row=document.getElementById('voice-opt-'+g); if(row) row.classList.toggle('selected',g===gender); });
+  if (!voice) {
+    statusEl.className = 'status-box err';
+    statusEl.textContent = '⚠️ לא נמצא קול עברי. נסה להוריד חבילת קולות עברית בהגדרות המכשיר שלך.';
+    return;
   }
 
-  function openSettingsModal() {
-    const saved=Storage.load();
-    document.getElementById('settings-sound-toggle').checked=saved.settings?.sound!==false;
-    document.getElementById('settings-haptics-toggle').checked=saved.settings?.haptics!==false;
-    const currentGender=saved.settings?.defaultGender||'boy';
-    _updateVoiceUI(currentGender);
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.voice = voice;
+  utt.lang = voice.lang;
+  utt.rate = 0.88;
+  utt.pitch = selectedGender === 'female' ? 1.1 : 0.9;
 
-    // Show voice status — no server needed
-    const el = document.getElementById('tts-api-status');
-    if (el) {
-      const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-      const heVoice = voices.find(v => v.lang.startsWith('he'));
-      if (heVoice) {
-        el.textContent = `קול פעיל: ${heVoice.name}`;
-        el.style.color = 'var(--green)';
-      } else {
-        el.textContent = 'קול מערכת (ברירת מחדל)';
-        el.style.color = 'var(--text3)';
-      }
-    }
+  speaking = true;
+  const speakBtn = document.getElementById('speak-btn');
+  const stopBtn = document.getElementById('stop-btn');
+  const wave = document.getElementById('wave');
+  const label = document.getElementById('speak-label');
 
-    document.getElementById('settings-modal').classList.add('open');
-  }
+  speakBtn.classList.add('speaking');
+  wave.classList.add('visible');
+  label.textContent = 'מדבר...';
+  stopBtn.classList.add('visible');
 
-  function closeSettingsModal() { TTS.stop(); document.getElementById('settings-modal').classList.remove('open'); }
+  statusEl.className = 'status-box info';
+  statusEl.textContent = `🔊 מדבר בקול: ${voice.name}`;
 
-  ['boy','girl'].forEach(function(gender){
-    const row=document.getElementById('voice-opt-'+gender);
-    if(row) row.addEventListener('click',function(e){
-      if(e.target.closest('.voice-test-btn')) return;
-      const saved=Storage.load(); saved.settings={...saved.settings, defaultGender:gender}; Storage.save(saved);
-      _updateVoiceUI(gender);
-      showToast(gender==='boy'?'נבחר: קול ילד':'נבחרה: קול ילדה');
-    });
-  });
+  utt.onend = () => {
+    speaking = false;
+    speakBtn.classList.remove('speaking');
+    wave.classList.remove('visible');
+    label.textContent = '▶ השמע קול';
+    stopBtn.classList.remove('visible');
+    statusEl.className = 'status-box ok';
+    statusEl.textContent = `✓ הושמע בהצלחה — קול: ${voice.name}`;
+  };
+  utt.onerror = () => {
+    speaking = false;
+    speakBtn.classList.remove('speaking');
+    wave.classList.remove('visible');
+    label.textContent = '▶ השמע קול';
+    stopBtn.classList.remove('visible');
+    statusEl.className = 'status-box err';
+    statusEl.textContent = '⚠️ שגיאה בהשמעת הקול.';
+  };
 
-  ['boy','girl'].forEach(function(gender){
-    const btn=document.getElementById('voice-test-'+gender);
-    if(!btn) return;
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      if(btn.classList.contains('playing')){ TTS.stop(); btn.textContent='▶'; btn.classList.remove('playing'); return; }
-      document.querySelectorAll('.voice-test-btn').forEach(function(b){ b.textContent='▶'; b.classList.remove('playing'); });
-      btn.textContent='⏳'; btn.classList.add('playing');
-      TTS.speakAndNotify(PREVIEW_TEXT, gender, function(){ btn.textContent='▶'; btn.classList.remove('playing'); });
-    });
-  });
+  window.speechSynthesis.speak(utt);
+}
 
-  document.getElementById('settings-save-btn').addEventListener('click',()=>{
-    const sound=document.getElementById('settings-sound-toggle').checked;
-    const haptics=document.getElementById('settings-haptics-toggle').checked;
-    const saved=Storage.load(); saved.settings={...saved.settings,sound,haptics}; Storage.save(saved);
-    if(!sound) TTS.stop();
-    closeSettingsModal(); showToast('הגדרות נשמרו');
-  });
-  document.getElementById('settings-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeSettingsModal(); });
-  return { open:openSettingsModal };
-})();
+function stopSpeaking() {
+  window.speechSynthesis.cancel();
+  speaking = false;
+  document.getElementById('speak-btn').classList.remove('speaking');
+  document.getElementById('wave').classList.remove('visible');
+  document.getElementById('speak-label').textContent = '▶ השמע קול';
+  document.getElementById('stop-btn').classList.remove('visible');
+}
 
-renderOnboarding();
-document.getElementById('home-history-btn').addEventListener('click',()=>State.dispatch({type:'GO_HISTORY'}));
-document.getElementById('add-kid-btn').addEventListener('click',openAddKidModal);
-document.getElementById('age-minus-btn').addEventListener('click',()=>{ if(kidAge>3){ kidAge--; document.getElementById('age-value').textContent=kidAge; haptic('light'); } });
-document.getElementById('age-plus-btn').addEventListener('click',()=>{ if(kidAge<18){ kidAge++; document.getElementById('age-value').textContent=kidAge; haptic('light'); } });
-document.getElementById('save-kid-btn').addEventListener('click',()=>{
-  const name=document.getElementById('kid-name-input').value.trim();
-  if(!name){ showToast('שכחת להכניס שם'); return; }
-  haptic('success'); closeAddKidModal();
-  State.dispatch({type:'ADD_KID', name, age:kidAge, emoji:selectedEmoji, companionGender:selectedCompanionGender});
-  showToast(`${selectedEmoji} ${name} נוסף!`);
-});
-document.getElementById('add-kid-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeAddKidModal(); });
-document.getElementById('game-back-btn').addEventListener('click',()=>{ haptic('light'); State.dispatch({type:'GO_HOME'}); });
-document.getElementById('summary-home-btn').addEventListener('click',()=>State.dispatch({type:'GO_HOME'}));
-document.getElementById('summary-new-btn').addEventListener('click',()=>State.dispatch({type:'GO_HOME'}));
-document.getElementById('summary-share-btn').addEventListener('click',()=>{
-  const session=State.get().currentSession; if(!session) return;
-  const text=`דילמות: ${session.kid} ו${State.get().parentRole} הסכמנו ב-${session.agreed}/${session.total} דילמות בקטגוריית ${session.category}!`;
-  if(navigator.share){ navigator.share({title:'דילמות',text}); } else { navigator.clipboard?.writeText(text).then(()=>showToast('הועתק!')); }
-});
-document.getElementById('history-back-btn').addEventListener('click',()=>State.dispatch({type:'GO_HOME'}));
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    const nav=item.dataset.nav; haptic('light');
-    if(nav==='home')    State.dispatch({type:'GO_HOME'});
-    if(nav==='history') State.dispatch({type:'GO_HISTORY'});
-    if(nav==='settings') Settings.open();
-  });
-});
-
-(function(){
-  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
-  const params=new URLSearchParams(window.location.search);
-  if(params.has('app')) return;
-  if(sessionStorage.getItem('bypass-landing')) return;
-  if(!isStandalone) window.location.replace('/landing.html');
-})();
-
-State.dispatch({type:'INIT'});
-
-if('serviceWorker' in navigator && location.protocol==='https:'){
-  navigator.serviceWorker.register('/sw.js')
-    .then(reg=>{
-      reg.addEventListener('updatefound',()=>{
-        const newWorker=reg.installing;
-        newWorker.addEventListener('statechange',()=>{
-          if(newWorker.state==='installed'&&navigator.serviceWorker.controller) showToast('עדכון זמין! רענן לטעינה');
-        });
-      });
-    })
-    .catch(err=>console.warn('[App] SW not available'));
+// Load voices
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+  setTimeout(loadVoices, 500); // fallback for some browsers
+} else {
+  document.getElementById('status').className = 'status-box err';
+  document.getElementById('status').textContent = '⚠️ הדפדפן שלך לא תומך ב-Web Speech API.';
 }
 </script>
 </body>
