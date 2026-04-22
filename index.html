@@ -3,128 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>בדיקת TTS</title>
+<title>דמו קריין | ShelterPlay</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0a0a0f;
-    --surface: #13131a;
-    --border: #1e1e2e;
-    --accent: #7c6af7;
-    --accent2: #4fc3f7;
-    --text: #e8e8f0;
-    --muted: #6b6b80;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     font-family: 'Heebo', sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    background: #0a0a0f;
+    color: #fff;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
   }
 
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 36px;
+    background: #13131a;
+    border: 1px solid #1e1e2e;
+    border-radius: 24px;
+    padding: 40px 32px;
     width: 100%;
-    max-width: 520px;
-    box-shadow: 0 0 60px rgba(124,106,247,0.08);
+    max-width: 420px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
   }
 
   h1 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin-bottom: 6px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 28px;
+    font-weight: 900;
+    color: #e63946;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
   }
 
   .sub {
-    color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 32px;
+  }
+
+  .texts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 28px;
   }
 
-  label {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-bottom: 8px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
+  .text-btn {
+    background: #1a1a24;
+    border: 1px solid #2a2a3a;
     border-radius: 12px;
-    color: var(--text);
-    font-family: 'Heebo', sans-serif;
-    font-size: 1rem;
     padding: 14px 16px;
-    resize: vertical;
-    min-height: 100px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 20px;
-  }
-
-  textarea:focus { border-color: var(--accent); }
-
-  .voices {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-
-  .voice-btn {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--muted);
-    padding: 10px 6px;
-    cursor: pointer;
+    color: #ccc;
     font-family: 'Heebo', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    text-align: center;
+    font-size: 15px;
+    text-align: right;
+    cursor: pointer;
     transition: all 0.2s;
+    line-height: 1.5;
   }
 
-  .voice-btn:hover { border-color: var(--accent); color: var(--text); }
-
-  .voice-btn.active {
-    border-color: var(--accent);
-    background: rgba(124,106,247,0.15);
-    color: var(--accent);
+  .text-btn:hover { border-color: #e63946; color: #fff; }
+  .text-btn.active {
+    border-color: #e63946;
+    background: #1e1018;
+    color: #fff;
   }
 
-  .voice-icon { font-size: 1.2rem; display: block; margin-bottom: 3px; }
+  label {
+    font-size: 12px;
+    color: #555;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  select {
+    width: 100%;
+    background: #1a1a24;
+    border: 1px solid #2a2a3a;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Heebo', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .speed-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .speed-row label { margin: 0; white-space: nowrap; }
+
+  input[type=range] {
+    flex: 1;
+    accent-color: #e63946;
+    cursor: pointer;
+  }
+
+  .speed-val {
+    font-size: 13px;
+    color: #e63946;
+    font-weight: 700;
+    min-width: 30px;
+    text-align: center;
+  }
 
   .play-btn {
     width: 100%;
-    background: linear-gradient(135deg, var(--accent), #9c8af7);
+    background: #e63946;
     border: none;
-    border-radius: 12px;
-    color: white;
+    border-radius: 14px;
+    padding: 18px;
+    color: #fff;
     font-family: 'Heebo', sans-serif;
-    font-size: 1rem;
+    font-size: 18px;
     font-weight: 700;
-    padding: 15px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
@@ -133,113 +134,185 @@
     gap: 10px;
   }
 
-  .play-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-  .play-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .play-btn:hover { background: #c1121f; transform: translateY(-1px); }
+  .play-btn:active { transform: translateY(0); }
+  .play-btn.speaking { background: #457b9d; }
+
+  .wave {
+    display: none;
+    align-items: center;
+    gap: 3px;
+    height: 20px;
+  }
+  .wave.active { display: flex; }
+  .wave span {
+    display: block;
+    width: 3px;
+    background: #fff;
+    border-radius: 2px;
+    animation: wave 0.8s ease-in-out infinite;
+  }
+  .wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .wave span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+  .wave span:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+  .wave span:nth-child(4) { height: 18px; animation-delay: 0.3s; }
+  .wave span:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+
+  @keyframes wave {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+  }
 
   .status {
     margin-top: 16px;
+    font-size: 13px;
+    color: #555;
     text-align: center;
-    font-size: 0.85rem;
-    color: var(--muted);
     min-height: 20px;
   }
 
-  .status.error { color: #f77; }
-  .status.ok { color: #7f7; }
-
-  .spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
+  .no-support {
+    display: none;
+    background: #2a1010;
+    border: 1px solid #e63946;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 13px;
+    color: #e63946;
+    text-align: center;
+    margin-top: 16px;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>🎙️ בדיקת TTS</h1>
-  <p class="sub">מחובר לשרת ShelterPlay · OpenAI TTS</p>
+  <h1>🎙️ קריין ShelterPlay</h1>
+  <p class="sub">Web Speech API · חינם · ללא שרת</p>
 
-  <label>טקסט לנגינה</label>
-  <textarea id="text">שלום! זוהי בדיקה של מערכת הקריינות. הקול נוצר על ידי OpenAI ומגיע דרך השרת שלנו.</textarea>
+  <div class="texts">
+    <button class="text-btn active" onclick="selectText(this, 'כניסה למרחב מוגן. כניסה למרחב מוגן.')">
+      🚨 כניסה למרחב מוגן
+    </button>
+    <button class="text-btn" onclick="selectText(this, 'אזעקה באזורך. היכנס מיד למרחב המוגן.')">
+      ⚠️ אזעקה באזורך
+    </button>
+    <button class="text-btn" onclick="selectText(this, 'ניתן לצאת מהמרחב המוגן. האזעקה הסתיימה.')">
+      ✅ ניתן לצאת
+    </button>
+  </div>
 
-  <label>בחר קול</label>
-  <div class="voices">
-    <button class="voice-btn active" data-voice="nova"><span class="voice-icon">👩</span>nova</button>
-    <button class="voice-btn" data-voice="alloy"><span class="voice-icon">🤖</span>alloy</button>
-    <button class="voice-btn" data-voice="shimmer"><span class="voice-icon">✨</span>shimmer</button>
-    <button class="voice-btn" data-voice="echo"><span class="voice-icon">👨</span>echo</button>
-    <button class="voice-btn" data-voice="fable"><span class="voice-icon">📖</span>fable</button>
-    <button class="voice-btn" data-voice="onyx"><span class="voice-icon">🎵</span>onyx</button>
+  <label>קול</label>
+  <select id="voiceSelect"></select>
+
+  <div class="speed-row">
+    <label>מהירות</label>
+    <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1"
+      oninput="document.getElementById('speedVal').textContent=this.value">
+    <span class="speed-val" id="speedVal">1</span>
   </div>
 
   <button class="play-btn" id="playBtn" onclick="speak()">
-    ▶ נגן
+    <div class="wave" id="wave">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <span id="btnText">▶ נגן</span>
   </button>
 
   <div class="status" id="status"></div>
+  <div class="no-support" id="noSupport">הדפדפן שלך לא תומך ב-Web Speech API</div>
 </div>
 
 <script>
-  const SERVER = 'https://shelterplay.onrender.com';
-  let selectedVoice = 'nova';
-  let currentAudio = null;
+let currentText = 'כניסה למרחב מוגן. כניסה למרחב מוגן.';
+let voices = [];
 
-  document.querySelectorAll('.voice-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.voice-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedVoice = btn.dataset.voice;
+function selectText(btn, text) {
+  document.querySelectorAll('.text-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentText = text;
+}
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+  const sel = document.getElementById('voiceSelect');
+  sel.innerHTML = '';
+
+  // Hebrew voices first
+  const heVoices = voices.filter(v => v.lang.startsWith('he'));
+  const otherVoices = voices.filter(v => !v.lang.startsWith('he'));
+
+  if (heVoices.length > 0) {
+    const grp = document.createElement('optgroup');
+    grp.label = '🇮🇱 עברית';
+    heVoices.forEach((v, i) => {
+      const o = document.createElement('option');
+      o.value = voices.indexOf(v);
+      o.textContent = v.name;
+      grp.appendChild(o);
     });
-  });
-
-  async function speak() {
-    const text = document.getElementById('text').value.trim();
-    if (!text) return;
-
-    const btn = document.getElementById('playBtn');
-    const status = document.getElementById('status');
-
-    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> טוען...';
-    status.textContent = 'מתחבר לשרת...';
-    status.className = 'status';
-
-    try {
-      const res = await fetch(`${SERVER}/tts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: selectedVoice })
-      });
-
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err || `שגיאה ${res.status}`);
-      }
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      currentAudio = new Audio(url);
-      currentAudio.play();
-      status.textContent = `✓ מנגן בקול ${selectedVoice}`;
-      status.className = 'status ok';
-
-      currentAudio.onended = () => {
-        btn.disabled = false;
-        btn.innerHTML = '▶ נגן';
-      };
-    } catch (e) {
-      status.textContent = '❌ ' + e.message;
-      status.className = 'status error';
-      btn.disabled = false;
-      btn.innerHTML = '▶ נגן';
-    }
+    sel.appendChild(grp);
   }
+
+  const grp2 = document.createElement('optgroup');
+  grp2.label = 'אחרים';
+  otherVoices.slice(0, 10).forEach(v => {
+    const o = document.createElement('option');
+    o.value = voices.indexOf(v);
+    o.textContent = `${v.name} (${v.lang})`;
+    grp2.appendChild(o);
+  });
+  sel.appendChild(grp2);
+}
+
+function speak() {
+  if (!('speechSynthesis' in window)) {
+    document.getElementById('noSupport').style.display = 'block';
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utt = new SpeechSynthesisUtterance(currentText);
+  const sel = document.getElementById('voiceSelect');
+  if (sel.value !== '') utt.voice = voices[parseInt(sel.value)];
+  utt.rate = parseFloat(document.getElementById('speed').value);
+  utt.lang = 'he-IL';
+
+  const btn = document.getElementById('playBtn');
+  const wave = document.getElementById('wave');
+  const btnText = document.getElementById('btnText');
+  const status = document.getElementById('status');
+
+  utt.onstart = () => {
+    btn.classList.add('speaking');
+    wave.classList.add('active');
+    btnText.textContent = 'מנגן...';
+    status.textContent = '🔊 מנגן קול';
+  };
+
+  utt.onend = () => {
+    btn.classList.remove('speaking');
+    wave.classList.remove('active');
+    btnText.textContent = '▶ נגן';
+    status.textContent = '✓ הושלם';
+  };
+
+  utt.onerror = (e) => {
+    btn.classList.remove('speaking');
+    wave.classList.remove('active');
+    btnText.textContent = '▶ נגן';
+    status.textContent = 'שגיאה: ' + e.error;
+  };
+
+  speechSynthesis.speak(utt);
+}
+
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+} else {
+  document.getElementById('noSupport').style.display = 'block';
+}
 </script>
 </body>
 </html>
